@@ -6,6 +6,7 @@ import PatternIntelligence from "@/components/pattern-intelligence";
 import DecisionReplay from "@/components/decision-replay";
 import ContradictionRadar from "@/components/contradiction-radar";
 import DecisionTrustScore from "@/components/decision-trust-score";
+import DecisionShockwave from "@/components/decision-shockwave";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <>
             {children}
             <ProposalGuard />
+            <DecisionShockwave />
             <PatternIntelligence />
             <DecisionTrustScore decisionKey="DEC-021" />
             <ContradictionRadar />
