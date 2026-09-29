@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./intelligence-center-v2.module.css";
 
 type Tool = {
@@ -124,7 +124,11 @@ function launchMountedTool(mountId: string) {
 export default function IntelligenceCenter() {
   const [open, setOpen] = useState(false);
 
-  const recommended = useMemo(() => tools.filter((tool) => tool.recommended), []);
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener("decisiondna:open-intelligence", handleOpen);
+    return () => window.removeEventListener("decisiondna:open-intelligence", handleOpen);
+  }, []);
 
   function launchTool(toolId: string) {
     const tool = tools.find((item) => item.id === toolId);
@@ -156,9 +160,7 @@ export default function IntelligenceCenter() {
               <div>
                 <p className={styles.productEyebrow}>DECISIONDNA · ORGANIZATIONAL MEMORY</p>
                 <h2>Intelligence Center</h2>
-                <span>
-                  Explore the reasoning, evidence, and organizational memory behind every important decision.
-                </span>
+                <span>Choose a capability based on where you are in the decision lifecycle.</span>
               </div>
               <button
                 className={styles.closeButton}
@@ -174,17 +176,16 @@ export default function IntelligenceCenter() {
               <section className={styles.centerHero}>
                 <div>
                   <p className={styles.eyebrow}>MEMORY-NATIVE DECISION INTELLIGENCE</p>
-                  <h3>Your organization remembers more than its final decisions.</h3>
+                  <h3>Understand why a decision made sense—and when its context changes.</h3>
                   <p>
-                    DecisionDNA connects the rationale, constraints, incidents, outcomes, and changed assumptions
-                    that explain why a decision made sense then—and whether it still makes sense now.
+                    Explore remembered rationale, constraints, incidents, outcomes, contradictions, and changed assumptions without losing the historical context around them.
                   </p>
                 </div>
 
                 <div className={styles.heroSignals}>
                   <div>
                     <strong>9</strong>
-                    <span>memory tools</span>
+                    <span>capabilities</span>
                   </div>
                   <div>
                     <strong>Evidence-first</strong>
@@ -203,36 +204,6 @@ export default function IntelligenceCenter() {
                 <div><span>03</span><strong>Re-evaluate</strong><small>What changed?</small></div>
                 <div><span>04</span><strong>Learn</strong><small>What should persist?</small></div>
               </section>
-
-              <section className={styles.recommendedSection}>
-                <div className={styles.sectionTitleRow}>
-                  <div>
-                    <span className={styles.sectionLabel}>CORE WORKFLOW</span>
-                    <h4>Start with the capabilities that explain a decision end to end</h4>
-                  </div>
-                  <small>{recommended.length} core capabilities</small>
-                </div>
-
-                <div className={styles.recommendedGrid}>
-                  {recommended.map((tool) => (
-                    <button
-                      type="button"
-                      className={styles.recommendedCard}
-                      key={tool.id}
-                      onClick={() => launchTool(tool.id)}
-                    >
-                      <span className={styles.toolIcon}>{tool.icon}</span>
-                      <div>
-                        <strong>{tool.title}</strong>
-                        <p>{tool.subtitle}</p>
-                      </div>
-                      <span className={styles.cardArrow}>→</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <div className={styles.divider} />
 
               {categories.map((category) => {
                 const categoryTools = tools.filter((tool) => tool.category === category.name);
