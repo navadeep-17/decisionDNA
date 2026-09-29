@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install dependencies
         run: npm install
@@ -43,6 +42,7 @@ jobs:
       - name: Wait for server and smoke homepage
         run: |
           set -euo pipefail
+          code=""
           for i in $(seq 1 30); do
             code=$(curl -sS -o /tmp/home.html -w "%{http_code}" http://127.0.0.1:3000/ || true)
             if [ "$code" = "200" ]; then
@@ -50,7 +50,7 @@ jobs:
             fi
             sleep 1
           done
-          test "${code:-}" = "200" || { cat /tmp/decisiondna-next.log; exit 1; }
+          test "$code" = "200" || { cat /tmp/decisiondna-next.log; exit 1; }
           grep -qi "DecisionDNA" /tmp/home.html || { echo "DecisionDNA marker missing from homepage"; cat /tmp/home.html; exit 1; }
 
       - name: Protected API routes reject unauthenticated requests
