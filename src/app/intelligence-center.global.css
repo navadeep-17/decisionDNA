@@ -5,3 +5,13 @@
 .intelligenceToolMount > button {
   display: none !important;
 }
+
+#intelligence-center-launcher {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  #intelligence-center-launcher {
+    display: flex !important;
+  }
+}
