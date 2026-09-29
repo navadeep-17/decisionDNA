@@ -10,17 +10,7 @@ type Tool = {
   title: string;
   subtitle: string;
   category: "Before decision" | "Decision health" | "Memory quality" | "Org learning";
-  featured?: boolean;
-};
-
-type JudgeStep = {
-  eyebrow: string;
-  title: string;
-  explanation: string;
-  action: string;
-  toolId?: string;
-  scrollTo?: string;
-  demoLine: string;
+  recommended?: boolean;
 };
 
 const tools: Tool[] = [
@@ -29,16 +19,16 @@ const tools: Tool[] = [
     mountId: "tool-knowledge-gaps",
     icon: "?",
     title: "Knowledge Gap Radar",
-    subtitle: "What evidence is still missing before this proposal is ready for human review?",
+    subtitle: "Find the evidence still missing before a proposal is ready for human review.",
     category: "Before decision",
-    featured: true,
+    recommended: true,
   },
   {
     id: "proposal",
     mountId: "tool-proposal-guard",
     icon: "↺",
     title: "Proposal Guard",
-    subtitle: "Detect whether the organization has tried this before and recover the old rationale.",
+    subtitle: "Recover similar historical attempts, old rationale, outcomes, and changed context.",
     category: "Before decision",
   },
   {
@@ -46,16 +36,16 @@ const tools: Tool[] = [
     mountId: "tool-decision-contract",
     icon: "§",
     title: "Decision Contract",
-    subtitle: "Evaluate original assumptions, success criteria, and explicit change-our-mind conditions.",
+    subtitle: "Track assumptions, success criteria, and the conditions that should trigger reconsideration.",
     category: "Decision health",
-    featured: true,
+    recommended: true,
   },
   {
     id: "trust",
     mountId: "tool-trust-score",
     icon: "%",
     title: "Memory Trust Score",
-    subtitle: "Explain how evidence support, outcomes, consistency, and freshness affect trust today.",
+    subtitle: "Explain how support, outcomes, consistency, and freshness affect confidence today.",
     category: "Decision health",
   },
   {
@@ -63,34 +53,34 @@ const tools: Tool[] = [
     mountId: "tool-drift-scanner",
     icon: "∆",
     title: "Decision Drift",
-    subtitle: "Scan tracked decisions for assumptions that no longer hold and surface review targets.",
+    subtitle: "Detect decisions whose original assumptions or constraints no longer hold.",
     category: "Decision health",
-    featured: true,
+    recommended: true,
   },
   {
     id: "replay",
     mountId: "tool-decision-replay",
     icon: "◷",
     title: "Memory Time Travel",
-    subtitle: "Reconstruct what the team knew then versus what the organization knows now.",
+    subtitle: "Compare what the team knew when a decision was made with what it knows now.",
     category: "Memory quality",
-    featured: true,
+    recommended: true,
   },
   {
     id: "shockwave",
     mountId: "tool-shockwave",
     icon: "◎",
     title: "Decision Shockwave",
-    subtitle: "Trace how one new memory propagates through decisions, assumptions, and lessons.",
+    subtitle: "Trace how one new memory affects decisions, assumptions, and organizational lessons.",
     category: "Memory quality",
-    featured: true,
+    recommended: true,
   },
   {
     id: "contradictions",
     mountId: "tool-contradictions",
     icon: "≠",
     title: "Contradiction Radar",
-    subtitle: "Separate true memory conflicts from legitimate decision evolution and stale assumptions.",
+    subtitle: "Separate genuine memory conflicts from normal decision evolution and stale assumptions.",
     category: "Memory quality",
   },
   {
@@ -98,59 +88,31 @@ const tools: Tool[] = [
     mountId: "tool-patterns",
     icon: "✦",
     title: "Pattern Intelligence",
-    subtitle: "Reflect across organizational memory to surface recurring patterns and durable lessons.",
+    subtitle: "Surface recurring organizational patterns and durable lessons across remembered history.",
     category: "Org learning",
   },
 ];
 
-const judgeSteps: JudgeStep[] = [
+const categories = [
   {
-    eyebrow: "01 · BEFORE THE DECISION",
-    title: "Ask what the organization still does not know.",
-    explanation: "Start with the managed-Redis proposal. DecisionDNA separates remembered evidence from material gaps instead of inventing missing facts.",
-    action: "Run Knowledge Gap Radar",
-    toolId: "gaps",
-    demoLine: "Before making a decision, DecisionDNA tells us what evidence is still missing.",
+    name: "Before decision" as const,
+    label: "Before a decision",
+    description: "Check what history already knows and what evidence is still missing.",
   },
   {
-    eyebrow: "02 · TERMS OF VALIDITY",
-    title: "Show that DEC-021 defined what would change our mind.",
-    explanation: "The decision contract was persisted before reconsideration. Reversal conditions are evaluated against memory later, not invented after the fact.",
-    action: "Open Decision Contract",
-    toolId: "contract",
-    demoLine: "DEC-021 explicitly said we should reconsider if Redis operations became externally managed.",
+    name: "Decision health" as const,
+    label: "Decision health",
+    description: "Understand whether an existing decision is still supported by its original reasoning.",
   },
   {
-    eyebrow: "03 · NEW EVIDENCE ARRIVES",
-    title: "Teach DecisionDNA the managed-Redis shadow-test result.",
-    explanation: "Add the prefilled evidence to the organizational timeline. It is stored in Supabase, retained by Hindsight, and immediately connected to historical context.",
-    action: "Go to Add Memory",
-    scrollTo: "ingest",
-    demoLine: "Now new evidence arrives months later. We teach it to the organization's persistent memory.",
+    name: "Memory quality" as const,
+    label: "Memory quality",
+    description: "Inspect temporal context, conflicts, and the downstream impact of new evidence.",
   },
   {
-    eyebrow: "04 · IMPACT PROPAGATION",
-    title: "Visualize the blast radius of one new memory.",
-    explanation: "Decision Shockwave maps the new evidence to affected decisions, changed assumptions, updated lessons, and human review targets.",
-    action: "Run Decision Shockwave",
-    toolId: "shockwave",
-    demoLine: "One new memory changes more than one card — DecisionDNA traces the full downstream impact.",
-  },
-  {
-    eyebrow: "05 · MEMORY TIME TRAVEL",
-    title: "Compare what NovaPay knew then with what it knows now.",
-    explanation: "Decision Replay separates pre-decision evidence from later knowledge and exposes the assumptions whose context changed.",
-    action: "Replay DEC-021",
-    toolId: "replay",
-    demoLine: "The decision was reasonable then. The context changed later. DecisionDNA can show both without rewriting history.",
-  },
-  {
-    eyebrow: "06 · HUMAN REVIEW",
-    title: "Close by showing the decision has drifted — not by auto-reversing it.",
-    explanation: "The drift scanner re-checks historical decisions against accumulated Hindsight memory and only recommends human review where the evidence warrants it.",
-    action: "Scan Decision Drift",
-    toolId: "drift",
-    demoLine: "DecisionDNA does not replace the decision-maker. It knows when the reasons behind an old decision deserve another look.",
+    name: "Org learning" as const,
+    label: "Organization learning",
+    description: "Turn individual memories into reusable organizational insight.",
   },
 ];
 
@@ -161,161 +123,151 @@ function launchMountedTool(mountId: string) {
 
 export default function IntelligenceCenter() {
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<"center" | "judge">("center");
-  const [judgeStep, setJudgeStep] = useState(0);
 
-  const activeStep = judgeSteps[judgeStep];
-  const categories = useMemo(
-    () => ["Before decision", "Decision health", "Memory quality", "Org learning"] as const,
-    [],
-  );
+  const recommended = useMemo(() => tools.filter((tool) => tool.recommended), []);
 
   function launchTool(toolId: string) {
     const tool = tools.find((item) => item.id === toolId);
     if (!tool) return;
+
     setOpen(false);
     window.setTimeout(() => launchMountedTool(tool.mountId), 90);
-  }
-
-  function runJudgeAction() {
-    if (activeStep.scrollTo) {
-      setJudgeStep((step) => Math.min(step + 1, judgeSteps.length - 1));
-      setOpen(false);
-      window.setTimeout(() => {
-        document.getElementById(activeStep.scrollTo!)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 80);
-      return;
-    }
-
-    if (activeStep.toolId) {
-      setJudgeStep((step) => Math.min(step + 1, judgeSteps.length - 1));
-      launchTool(activeStep.toolId);
-    }
   }
 
   return (
     <>
       <button className={styles.launcher} type="button" onClick={() => setOpen(true)}>
         <span className={styles.launcherIcon}>✦</span>
-        <span>
+        <span className={styles.launcherCopy}>
           <strong>Intelligence Center</strong>
-          <small>Judge mode + 9 memory tools</small>
+          <small>9 organizational memory capabilities</small>
         </span>
-        <span className={styles.launcherArrow}>⌘</span>
+        <span className={styles.launcherArrow}>Open</span>
       </button>
 
       {open ? (
         <div className={styles.backdrop} onMouseDown={() => setOpen(false)}>
-          <section className={styles.panel} onMouseDown={(event) => event.stopPropagation()}>
+          <section
+            className={styles.panel}
+            onMouseDown={(event) => event.stopPropagation()}
+            aria-label="DecisionDNA Intelligence Center"
+          >
             <header className={styles.header}>
               <div>
-                <p>DECISIONDNA / ORGANIZATIONAL MEMORY</p>
+                <p className={styles.productEyebrow}>DECISIONDNA · ORGANIZATIONAL MEMORY</p>
                 <h2>Intelligence Center</h2>
-                <span>One place for every memory-native capability.</span>
+                <span>
+                  Explore the reasoning, evidence, and organizational memory behind every important decision.
+                </span>
               </div>
-              <div className={styles.headerActions}>
-                <button className={mode === "judge" ? styles.modeActive : ""} type="button" onClick={() => setMode("judge")}>
-                  ▶ Judge mode
-                </button>
-                <button className={mode === "center" ? styles.modeActive : ""} type="button" onClick={() => setMode("center")}>
-                  Intelligence tools
-                </button>
-                <button className={styles.closeButton} type="button" onClick={() => setOpen(false)} aria-label="Close">×</button>
-              </div>
+              <button
+                className={styles.closeButton}
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close Intelligence Center"
+              >
+                ×
+              </button>
             </header>
 
-            {mode === "judge" ? (
-              <div className={styles.judgeLayout}>
-                <aside className={styles.stepRail}>
-                  <div className={styles.stepRailHeader}>
-                    <span>60-SECOND STORY</span>
-                    <strong>Why memory changes decisions</strong>
+            <div className={styles.centerBody}>
+              <section className={styles.centerHero}>
+                <div>
+                  <p className={styles.eyebrow}>MEMORY-NATIVE DECISION INTELLIGENCE</p>
+                  <h3>Your organization remembers more than its final decisions.</h3>
+                  <p>
+                    DecisionDNA connects the rationale, constraints, incidents, outcomes, and changed assumptions
+                    that explain why a decision made sense then—and whether it still makes sense now.
+                  </p>
+                </div>
+
+                <div className={styles.heroSignals}>
+                  <div>
+                    <strong>9</strong>
+                    <span>memory tools</span>
                   </div>
-                  {judgeSteps.map((step, index) => (
+                  <div>
+                    <strong>Evidence-first</strong>
+                    <span>reasoning</span>
+                  </div>
+                  <div>
+                    <strong>Human</strong>
+                    <span>final review</span>
+                  </div>
+                </div>
+              </section>
+
+              <section className={styles.lifecycleStrip} aria-label="Decision lifecycle">
+                <div><span>01</span><strong>Explore</strong><small>What do we know?</small></div>
+                <div><span>02</span><strong>Decide</strong><small>Why is this valid?</small></div>
+                <div><span>03</span><strong>Re-evaluate</strong><small>What changed?</small></div>
+                <div><span>04</span><strong>Learn</strong><small>What should persist?</small></div>
+              </section>
+
+              <section className={styles.recommendedSection}>
+                <div className={styles.sectionTitleRow}>
+                  <div>
+                    <span className={styles.sectionLabel}>CORE WORKFLOW</span>
+                    <h4>Start with the capabilities that explain a decision end to end</h4>
+                  </div>
+                  <small>{recommended.length} core capabilities</small>
+                </div>
+
+                <div className={styles.recommendedGrid}>
+                  {recommended.map((tool) => (
                     <button
                       type="button"
-                      key={step.eyebrow}
-                      className={`${styles.stepButton} ${index === judgeStep ? styles.stepActive : ""} ${index < judgeStep ? styles.stepDone : ""}`}
-                      onClick={() => setJudgeStep(index)}
+                      className={styles.recommendedCard}
+                      key={tool.id}
+                      onClick={() => launchTool(tool.id)}
                     >
-                      <span>{index < judgeStep ? "✓" : String(index + 1).padStart(2, "0")}</span>
+                      <span className={styles.toolIcon}>{tool.icon}</span>
                       <div>
-                        <strong>{step.title}</strong>
-                        <small>{step.eyebrow}</small>
+                        <strong>{tool.title}</strong>
+                        <p>{tool.subtitle}</p>
                       </div>
+                      <span className={styles.cardArrow}>→</span>
                     </button>
                   ))}
-                </aside>
+                </div>
+              </section>
 
-                <main className={styles.judgeStage}>
-                  <div className={styles.judgeProgress}>
-                    <span style={{ width: `${((judgeStep + 1) / judgeSteps.length) * 100}%` }} />
-                  </div>
-                  <p className={styles.eyebrow}>{activeStep.eyebrow}</p>
-                  <h3>{activeStep.title}</h3>
-                  <p className={styles.judgeExplanation}>{activeStep.explanation}</p>
+              <div className={styles.divider} />
 
-                  <article className={styles.demoScript}>
-                    <span>WHAT TO SAY</span>
-                    <p>“{activeStep.demoLine}”</p>
-                  </article>
-
-                  <div className={styles.judgeControls}>
-                    <button type="button" className={styles.secondaryButton} disabled={judgeStep === 0} onClick={() => setJudgeStep((step) => Math.max(0, step - 1))}>
-                      ← Previous
-                    </button>
-                    <button type="button" className={styles.primaryButton} onClick={runJudgeAction}>
-                      {activeStep.action} →
-                    </button>
-                    {judgeStep < judgeSteps.length - 1 ? (
-                      <button type="button" className={styles.textButton} onClick={() => setJudgeStep((step) => Math.min(judgeSteps.length - 1, step + 1))}>
-                        Skip step
-                      </button>
-                    ) : null}
-                  </div>
-
-                  <div className={styles.judgeFooter}>
-                    <span>STEP {judgeStep + 1} / {judgeSteps.length}</span>
-                    <p>Human-controlled throughout · Hindsight supplies persistent semantic + temporal memory.</p>
-                  </div>
-                </main>
-              </div>
-            ) : (
-              <div className={styles.centerBody}>
-                <section className={styles.centerHero}>
-                  <div>
-                    <p className={styles.eyebrow}>MEMORY-NATIVE INTELLIGENCE</p>
-                    <h3>From “what happened?” to “what changed our decision?”</h3>
-                    <p>DecisionDNA organizes its capabilities around the decision lifecycle instead of exposing a collection of unrelated AI widgets.</p>
-                  </div>
-                  <button type="button" className={styles.primaryButton} onClick={() => setMode("judge")}>
-                    Start judge mode →
-                  </button>
-                </section>
-
-                {categories.map((category) => (
-                  <section className={styles.category} key={category}>
+              {categories.map((category) => {
+                const categoryTools = tools.filter((tool) => tool.category === category.name);
+                return (
+                  <section className={styles.category} key={category.name}>
                     <div className={styles.categoryHeader}>
-                      <span>{category.toUpperCase()}</span>
-                      <small>{tools.filter((tool) => tool.category === category).length} capabilities</small>
+                      <div>
+                        <span>{category.label.toUpperCase()}</span>
+                        <p>{category.description}</p>
+                      </div>
+                      <small>{categoryTools.length} {categoryTools.length === 1 ? "capability" : "capabilities"}</small>
                     </div>
+
                     <div className={styles.toolGrid}>
-                      {tools.filter((tool) => tool.category === category).map((tool) => (
-                        <button type="button" className={styles.toolCard} key={tool.id} onClick={() => launchTool(tool.id)}>
+                      {categoryTools.map((tool) => (
+                        <button
+                          type="button"
+                          className={styles.toolCard}
+                          key={tool.id}
+                          onClick={() => launchTool(tool.id)}
+                        >
                           <div className={styles.toolTopline}>
                             <span className={styles.toolIcon}>{tool.icon}</span>
-                            {tool.featured ? <span className={styles.featured}>JUDGE PICK</span> : null}
+                            {tool.recommended ? <span className={styles.coreBadge}>CORE</span> : null}
                           </div>
                           <strong>{tool.title}</strong>
                           <p>{tool.subtitle}</p>
-                          <span className={styles.openLabel}>Open capability →</span>
+                          <span className={styles.openLabel}>Open capability <b>→</b></span>
                         </button>
                       ))}
                     </div>
                   </section>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </section>
         </div>
       ) : null}
