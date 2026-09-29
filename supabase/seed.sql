@@ -1,4 +1,5 @@
 -- Idempotent NovaPay demo seed for DecisionDNA.
+-- Requires migrations through 007_event_hindsight_sync_state.sql.
 
 with org as (
   insert into public.organizations (name, slug, hindsight_bank_id)
@@ -19,8 +20,35 @@ with org as (
   union all
   select p.id, p.organization_id from public.projects p join public.organizations o on o.id=p.organization_id where o.slug='novapay' and p.slug='checkout' limit 1
 )
-insert into public.events (organization_id, project_id, external_id, event_type, title, content, source, event_date, hindsight_document_id)
-select p.organization_id, p.id, v.external_id, v.event_type, v.title, v.content, 'synthetic-demo-data', v.event_date::timestamptz, v.external_id
+insert into public.events (
+  organization_id,
+  project_id,
+  external_id,
+  event_type,
+  title,
+  content,
+  source,
+  event_date,
+  hindsight_document_id,
+  hindsight_sync_status,
+  hindsight_sync_error,
+  hindsight_sync_attempts,
+  hindsight_synced_at
+)
+select
+  p.organization_id,
+  p.id,
+  v.external_id,
+  v.event_type,
+  v.title,
+  v.content,
+  'synthetic-demo-data',
+  v.event_date::timestamptz,
+  v.external_id,
+  'synced',
+  null,
+  1,
+  now()
 from proj_id p
 cross join (values
   ('EVT-001','proposal','Redis session store proposed','NovaPay Platform proposed moving checkout session state from PostgreSQL to a self-managed Redis cluster. The infrastructure team warned that operating another stateful system could increase on-call load.','2026-01-12T09:30:00Z'),
@@ -32,7 +60,15 @@ cross join (values
   ('EVT-007','capability_change','Managed Redis Cloud adopted','NovaPay adopted managed Redis Cloud for rate limiting and ephemeral workloads. The provider now owns patching, failover, memory scaling, backups, and capacity operations.','2026-08-14T09:00:00Z'),
   ('EVT-008','outcome','Managed Redis operating successfully','After four weeks of managed Redis Cloud usage, NovaPay reported no Redis-related incidents and materially lower operational effort.','2026-09-10T14:00:00Z')
 ) as v(external_id,event_type,title,content,event_date)
-on conflict (organization_id, external_id) do update set title=excluded.title, content=excluded.content, event_date=excluded.event_date;
+on conflict (organization_id, external_id) do update
+set title=excluded.title,
+    content=excluded.content,
+    event_date=excluded.event_date,
+    hindsight_document_id=excluded.hindsight_document_id,
+    hindsight_sync_status='synced',
+    hindsight_sync_error=null,
+    hindsight_sync_attempts=greatest(public.events.hindsight_sync_attempts, 1),
+    hindsight_synced_at=coalesce(public.events.hindsight_synced_at, now());
 
 with p as (
   select p.id as project_id, p.organization_id
