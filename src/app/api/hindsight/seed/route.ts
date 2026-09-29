@@ -1,9 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { seedNovaPayRedisHistory } from "@/lib/hindsight/seed";
+import { requireSupabaseUser } from "@/lib/supabase/require-user";
 
 export const runtime = "nodejs";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const auth = await requireSupabaseUser(request);
+  if (!auth.user) {
+    return NextResponse.json({ ok: false, error: auth.error }, { status: 401 });
+  }
+
   try {
     const result = await seedNovaPayRedisHistory();
     return NextResponse.json({
