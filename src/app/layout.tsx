@@ -10,6 +10,7 @@ import DecisionShockwave from "@/components/decision-shockwave";
 import DecisionContract from "@/components/decision-contract";
 import KnowledgeGapRadar from "@/components/knowledge-gap-radar";
 import IntelligenceCenter from "@/components/intelligence-center";
+import WorkspaceNavigationEnhancer from "@/components/workspace-navigation-enhancer";
 import "./globals.css";
 import "./ingest.css";
 import "./readability.css";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AuthShell>
           <>
             {children}
+            <WorkspaceNavigationEnhancer />
 
             <div id="tool-proposal-guard" className="intelligenceToolMount">
               <ProposalGuard />
