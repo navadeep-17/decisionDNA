@@ -1,4 +1,4 @@
-/* DecisionDNA readability layer — intentionally loaded after globals.css */
+/* DecisionDNA readability layer — intentionally loaded after globals.css and ingest.css */
 
 :root {
   --muted: #9aafa8;
@@ -124,6 +124,41 @@ summary:focus-visible {
 .timelineItem,
 .historyItem {
   line-height: 1.65;
+}
+
+/* Add Memory is a core workflow, so keep it comfortably readable. */
+.ingestIntro p,
+.impactCard > p:not(.sectionKicker) {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #a9bbb5;
+}
+
+.learnBadge {
+  font-size: 10px;
+}
+
+.ingestCard label {
+  font-size: 11.5px;
+  color: #9eb2ab;
+}
+
+.ingestCard input,
+.ingestCard select,
+.ingestCard textarea {
+  font-size: 13.5px;
+}
+
+.ingestActions > span,
+.impactFooter > span,
+.syncChips span,
+.impactAnalysis > span {
+  font-size: 10.5px;
+}
+
+.flowSteps span {
+  font-size: 11.5px;
+  line-height: 1.45;
 }
 
 textarea,
