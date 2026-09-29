@@ -73,6 +73,7 @@ jobs:
             "/api/hindsight/contract-check"
             "/api/hindsight/gaps"
             "/api/memory/ingest"
+            "/api/memory/retry-sync"
           )
           for route in "${routes[@]}"; do
             code=$(curl -sS -o /tmp/api-response.txt -w "%{http_code}" -X POST \
