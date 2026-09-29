@@ -63,6 +63,13 @@ export default function Home() {
           <button disabled={!!busy} onClick={() => callApi("Seed history", "/api/hindsight/seed")}>{busy === "Seed history" ? "Retaining…" : "Retain 8 memories"}</button>
         </article>
 
+        <article className="card">
+          <div className="step">02B</div>
+          <h2>Inspect memory bank</h2>
+          <p>Shows the exact Hindsight bank ID, extracted memory count, and the first retained memory units. Use this immediately after seeding.</p>
+          <button className="secondary" disabled={!!busy} onClick={() => callApi("Bank status", "/api/hindsight/status")}>{busy === "Bank status" ? "Inspecting…" : "Inspect bank"}</button>
+        </article>
+
         <article className="card wide">
           <div className="step">03</div>
           <h2>Ask the organization&apos;s memory</h2>
