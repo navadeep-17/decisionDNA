@@ -1,0 +1,7 @@
+.intelligenceToolMount {
+  display: contents;
+}
+
+.intelligenceToolMount > button {
+  display: none !important;
+}
