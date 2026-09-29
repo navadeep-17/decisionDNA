@@ -117,3 +117,24 @@ where o.slug='novapay' and d.decision_key='DEC-021'
   and not exists (
     select 1 from public.decision_reviews r where r.decision_id=d.id and r.status='review_suggested'
   );
+
+insert into public.decision_contract_terms (decision_id, term_key, term_type, term_text, baseline_status, sort_order)
+select d.id, seed.term_key, seed.term_type, seed.term_text, seed.baseline_status, seed.sort_order
+from public.decisions d
+join public.organizations o on o.id=d.organization_id
+cross join (
+  values
+    ('A1', 'assumption', 'Checkout-session reliability requires avoiding Redis memory-eviction risk during burst traffic.', 'active', 10),
+    ('A2', 'assumption', 'Operating Redis for checkout sessions creates unacceptable operational burden for the small Platform team.', 'active', 20),
+    ('S1', 'success_criterion', 'Checkout sessions remain reliable during campaign-scale traffic without session loss.', 'active', 30),
+    ('S2', 'success_criterion', 'The chosen session architecture keeps operational ownership manageable for the Platform team.', 'active', 40),
+    ('R1', 'reversal_condition', 'Redis operational work is materially externalized through a managed service that handles scaling, failover, patching, backups, and capacity.', 'not_met', 50),
+    ('R2', 'reversal_condition', 'Platform-team capacity expands substantially enough that Redis operational ownership is no longer a limiting constraint.', 'not_met', 60),
+    ('R3', 'reversal_condition', 'Managed Redis demonstrates checkout-scale burst reliability with zero session loss and no manual Platform-team intervention.', 'not_met', 70)
+) as seed(term_key, term_type, term_text, baseline_status, sort_order)
+where o.slug='novapay' and d.decision_key='DEC-021'
+on conflict (decision_id, term_key) do update
+set term_type=excluded.term_type,
+    term_text=excluded.term_text,
+    baseline_status=excluded.baseline_status,
+    sort_order=excluded.sort_order;
