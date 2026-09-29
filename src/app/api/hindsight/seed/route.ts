@@ -5,8 +5,14 @@ export const runtime = "nodejs";
 
 export async function POST() {
   try {
-    const events = await seedNovaPayRedisHistory();
-    return NextResponse.json({ ok: true, retained: events.length, events });
+    const result = await seedNovaPayRedisHistory();
+    return NextResponse.json({
+      ok: true,
+      retained: result.events.length,
+      memoryTotal: result.memoryTotal,
+      events: result.events,
+      retainResult: result.retainResult,
+    });
   } catch (error) {
     return NextResponse.json(
       { ok: false, error: error instanceof Error ? error.message : "Unknown error" },
