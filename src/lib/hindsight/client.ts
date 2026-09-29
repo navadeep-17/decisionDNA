@@ -1,8 +1,11 @@
 import { HindsightClient } from "@vectorize-io/hindsight-client";
+import { recallEvidenceSchema, reflectResultSchema } from "@/lib/validation/memory";
 
 type RecallOptions = NonNullable<Parameters<HindsightClient["recall"]>[2]>;
 type RecallResponse = Awaited<ReturnType<HindsightClient["recall"]>>;
 type RecallItem = RecallResponse["results"][number];
+type ReflectResponse = Awaited<ReturnType<HindsightClient["reflect"]>>;
+type ReflectOptions = NonNullable<Parameters<HindsightClient["reflect"]>[2]>;
 
 type DecisionDNARecallItem = Omit<RecallItem, "type"> & {
   type?: string;
@@ -21,12 +24,17 @@ type DecisionDNARecallOptions = RecallOptions & {
   limit?: number;
 };
 
-type DecisionDNAHindsightClient = Omit<HindsightClient, "recall"> & {
+type DecisionDNAHindsightClient = Omit<HindsightClient, "recall" | "reflect"> & {
   recall(
     bankId: string,
     query: string,
     options?: DecisionDNARecallOptions,
   ): Promise<DecisionDNARecallResponse>;
+  reflect(
+    bankId: string,
+    query: string,
+    options?: ReflectOptions,
+  ): Promise<ReflectResponse>;
 };
 
 let client: DecisionDNAHindsightClient | null = null;
@@ -34,6 +42,7 @@ let client: DecisionDNAHindsightClient | null = null;
 function createDecisionDNAHindsightClient(baseUrl: string, apiKey: string) {
   const rawClient = new HindsightClient({ baseUrl, apiKey });
   const rawRecall = rawClient.recall.bind(rawClient);
+  const rawReflect = rawClient.reflect.bind(rawClient);
   const adaptedClient = rawClient as unknown as DecisionDNAHindsightClient;
 
   adaptedClient.recall = async (bankId, query, options = {}) => {
@@ -48,7 +57,7 @@ function createDecisionDNAHindsightClient(baseUrl: string, apiKey: string) {
         ? Math.floor(limit)
         : result.results.length;
 
-    return {
+    const adaptedResult = {
       ...result,
       results: result.results.slice(0, resultLimit).map((item) => ({
         ...item,
@@ -56,6 +65,17 @@ function createDecisionDNAHindsightClient(baseUrl: string, apiKey: string) {
         score: item.scores?.final ?? item.scores?.reranker ?? undefined,
       })),
     };
+
+    // Fail closed if the SDK or service returns an unexpected shape. This prevents
+    // downstream intelligence features from silently reasoning over malformed data.
+    recallEvidenceSchema.parse(adaptedResult);
+    return adaptedResult;
+  };
+
+  adaptedClient.reflect = async (bankId, query, options = {}) => {
+    const result = await rawReflect(bankId, query, options);
+    reflectResultSchema.parse(result);
+    return result;
   };
 
   return adaptedClient;
