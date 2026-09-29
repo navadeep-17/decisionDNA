@@ -1,0 +1,493 @@
+/* DecisionDNA v2 — readability-first product theme.
+   Loaded last so the legacy green palette cannot leak through the primary UI. */
+
+:root {
+  --bg: #0b1020;
+  --bg-soft: #10172a;
+  --panel: rgba(17, 24, 39, 0.94);
+  --panel-strong: #121a2d;
+  --panel-soft: #19233a;
+  --border: rgba(148, 163, 184, 0.20);
+  --border-strong: rgba(96, 165, 250, 0.48);
+  --text: #f8fafc;
+  --muted: #c0cad8;
+  --muted-2: #8997ab;
+  --accent: #79a8ff;
+  --accent-strong: #4f7cff;
+  --accent-deep: #1b2b55;
+  --violet: #a78bfa;
+  --warning: #f6c85f;
+  --danger: #fb7185;
+  --success: #34d399;
+  --shadow: 0 28px 80px rgba(2, 6, 23, 0.38);
+}
+
+html {
+  background: var(--bg) !important;
+}
+
+body {
+  color: var(--text) !important;
+  background:
+    radial-gradient(circle at 76% 2%, rgba(79, 124, 255, 0.15), transparent 29%),
+    radial-gradient(circle at 12% 58%, rgba(167, 139, 250, 0.09), transparent 29%),
+    linear-gradient(180deg, #0b1020 0%, #0a0f1e 100%) !important;
+  font-size: 16px !important;
+  line-height: 1.62 !important;
+}
+
+/* ---------- Shell / navigation ---------- */
+.sidebar {
+  background: rgba(10, 15, 30, 0.96) !important;
+  border-right-color: var(--border) !important;
+  box-shadow: 14px 0 45px rgba(2, 6, 23, 0.18);
+}
+
+.brandMark {
+  background: linear-gradient(145deg, #5b8cff, #9a7cff) !important;
+  color: white !important;
+  box-shadow: 0 12px 32px rgba(79, 124, 255, 0.25) !important;
+}
+
+.brand strong { color: #ffffff !important; font-size: 16px !important; }
+.brand span { color: #9eabc0 !important; font-size: 12px !important; }
+
+.navItem {
+  color: #aeb9c9 !important;
+  font-size: 14px !important;
+  min-height: 45px;
+}
+
+.navItem span { color: #71819a !important; }
+.navItem:hover {
+  color: #ffffff !important;
+  background: rgba(96, 165, 250, 0.08) !important;
+  border-color: rgba(96, 165, 250, 0.16) !important;
+}
+.navItem.active,
+.navUtilityItem:hover {
+  color: #dbeafe !important;
+  background: linear-gradient(90deg, rgba(79, 124, 255, 0.18), rgba(167, 139, 250, 0.07)) !important;
+  border-color: rgba(96, 165, 250, 0.28) !important;
+}
+.navItem.active span,
+.navUtilityItem span { color: #79a8ff !important; }
+
+.workspaceBadge {
+  background: rgba(30, 41, 59, 0.55) !important;
+  border-color: var(--border) !important;
+}
+.workspaceAvatar {
+  background: #1d2f60 !important;
+  color: #bcd0ff !important;
+}
+.poweredBy { color: #758399 !important; }
+
+.topbar {
+  background: rgba(11, 16, 32, 0.86) !important;
+  border-bottom-color: var(--border) !important;
+}
+.topEyebrow { color: #91a0b6 !important; font-size: 12px !important; }
+.topbar h1 { color: #ffffff !important; font-size: 23px !important; }
+.memoryLive {
+  color: #cbd5e1 !important;
+  background: rgba(30, 41, 59, 0.72) !important;
+  border-color: var(--border) !important;
+  font-size: 12.5px !important;
+}
+.liveDot {
+  background: #60a5fa !important;
+  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.12) !important;
+}
+
+/* ---------- Hero ---------- */
+.contentWrap { width: min(1320px, calc(100% - 72px)) !important; }
+.overviewHero {
+  min-height: 310px !important;
+  border-color: rgba(96, 165, 250, 0.22) !important;
+  background:
+    radial-gradient(circle at 87% 42%, rgba(79, 124, 255, 0.20), transparent 27%),
+    radial-gradient(circle at 5% 100%, rgba(167, 139, 250, 0.10), transparent 35%),
+    linear-gradient(135deg, #151f38 0%, #0f172a 58%, #111827 100%) !important;
+  box-shadow: 0 28px 80px rgba(2, 6, 23, 0.32) !important;
+}
+.overviewHero::after {
+  border-color: rgba(121, 168, 255, 0.14) !important;
+  box-shadow: 0 0 0 46px rgba(121, 168, 255, 0.045), 0 0 0 92px rgba(167, 139, 250, 0.025) !important;
+}
+.sectionKicker {
+  color: #8ab4ff !important;
+  font-size: 12px !important;
+  letter-spacing: .14em !important;
+}
+.heroCopy h2 {
+  color: #ffffff !important;
+  font-size: clamp(40px, 5vw, 66px) !important;
+  line-height: 1.04 !important;
+}
+.heroCopy h2 span {
+  color: #9cbaff !important;
+  text-shadow: 0 0 34px rgba(79, 124, 255, .16);
+}
+.heroCopy > p:last-child {
+  color: #c6d0de !important;
+  font-size: 17px !important;
+  line-height: 1.78 !important;
+  max-width: 760px !important;
+}
+.pulseRing {
+  border-color: rgba(121, 168, 255, 0.30) !important;
+  box-shadow: 0 0 0 12px rgba(79, 124, 255, 0.06), 0 0 0 26px rgba(167, 139, 250, 0.03) !important;
+}
+.pulseCore {
+  background: linear-gradient(145deg, rgba(79, 124, 255, .20), rgba(167, 139, 250, .10)) !important;
+  border-color: rgba(121, 168, 255, 0.35) !important;
+  color: #c4d5ff !important;
+}
+.memoryPulse strong { font-size: 14px !important; color: #f8fafc !important; }
+.memoryPulse::after { color: #92a1b7 !important; font-size: 12px !important; }
+
+/* ---------- Core cards ---------- */
+.statCard,
+.askIntro,
+.askConsole,
+.timeline,
+.memoryHealth,
+.ingestCard,
+.impactCard {
+  background: linear-gradient(180deg, rgba(20, 29, 50, .96), rgba(15, 23, 42, .96)) !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 10px 32px rgba(2, 6, 23, 0.16);
+}
+.statCard { min-height: 142px !important; padding: 22px !important; }
+.statLabel { color: #bcc7d6 !important; font-size: 13px !important; }
+.statCard strong { color: #ffffff !important; font-size: 32px !important; }
+.statDelta { color: #93a1b4 !important; font-size: 11.5px !important; }
+.statDelta.positive { color: #6ee7b7 !important; }
+.statCard.attention {
+  border-color: rgba(246, 200, 95, .30) !important;
+  background: linear-gradient(145deg, rgba(54, 43, 20, .38), rgba(17, 24, 39, .96)) !important;
+}
+
+.sectionBlock { margin-top: 56px !important; }
+.sectionHeader { margin-bottom: 20px !important; }
+.sectionHeader h3,
+.askIntro h3,
+.memoryHealth h3 {
+  color: #ffffff !important;
+  font-size: 30px !important;
+  line-height: 1.15 !important;
+}
+.smallMeta { color: #97a5b9 !important; font-size: 12px !important; }
+
+.decisionCard {
+  border-color: rgba(246, 200, 95, .28) !important;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(246, 200, 95, .08), transparent 28%),
+    linear-gradient(135deg, #182136, #111827) !important;
+  box-shadow: 0 20px 55px rgba(2, 6, 23, .20);
+}
+.reviewBadge { font-size: 10.5px !important; }
+.decisionId { color: #93a1b4 !important; font-size: 12px !important; }
+.decisionCard h4 { color: #ffffff !important; font-size: 30px !important; }
+.decisionSummary {
+  color: #c4cedc !important;
+  font-size: 15.5px !important;
+  line-height: 1.78 !important;
+}
+.reasonGrid > div {
+  background: rgba(30, 41, 59, .72) !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  padding: 16px !important;
+}
+.reasonGrid span { color: #8fa0b7 !important; font-size: 10.5px !important; }
+.reasonGrid strong { color: #e8edf5 !important; font-size: 13.5px !important; line-height: 1.65 !important; }
+
+.primaryBtn {
+  background: linear-gradient(135deg, #4f7cff, #7c6df2) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 28px rgba(79, 124, 255, .22) !important;
+  font-size: 13px !important;
+  padding: 12px 17px !important;
+}
+.primaryBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #638cff, #927ef5) !important;
+}
+.secondaryBtn {
+  background: #1a2540 !important;
+  color: #e5eaf2 !important;
+  border-color: rgba(148, 163, 184, .23) !important;
+  font-size: 13px !important;
+  padding: 12px 17px !important;
+}
+.secondaryBtn:hover:not(:disabled) { background: #21304f !important; border-color: rgba(121,168,255,.4) !important; }
+
+/* ---------- Ask memory / evidence ---------- */
+.askIntro > p:not(.sectionKicker) { color: #bdc8d8 !important; font-size: 14px !important; line-height: 1.75 !important; }
+.suggestionList button {
+  background: #18233b !important;
+  color: #bdc8d8 !important;
+  border-color: rgba(148,163,184,.18) !important;
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+}
+.suggestionList button:hover { color: white !important; border-color: rgba(121,168,255,.42) !important; }
+.askConsole label { color: #9aa8bb !important; font-size: 10.5px !important; }
+.askConsole textarea,
+.ingestCard input,
+.ingestCard select,
+.ingestCard textarea {
+  background: #0d1528 !important;
+  color: #f8fafc !important;
+  border-color: rgba(148,163,184,.24) !important;
+  font-size: 14px !important;
+}
+.askConsole textarea:focus,
+.ingestCard input:focus,
+.ingestCard select:focus,
+.ingestCard textarea:focus {
+  border-color: rgba(96,165,250,.64) !important;
+  box-shadow: 0 0 0 3px rgba(79,124,255,.13) !important;
+  background: #101a31 !important;
+}
+.answerPanel,
+.impactAnalysis {
+  background: rgba(15, 23, 42, .78) !important;
+  border-color: rgba(148,163,184,.18) !important;
+}
+.answerHeader { color: #91a0b6 !important; font-size: 10.5px !important; }
+.recallRow { border-bottom-color: rgba(148,163,184,.12) !important; }
+.recallRow > span,
+.evidenceRank { color: #7186a6 !important; }
+.recallRow p,
+.evidenceItem p { color: #bec9d8 !important; font-size: 12px !important; line-height: 1.65 !important; }
+.memoryType,
+.resultEyebrow,
+.impactAnalysis > span { color: #79a8ff !important; }
+.evidenceItem {
+  background: rgba(30,41,59,.58) !important;
+  border-color: rgba(148,163,184,.16) !important;
+}
+.evidenceDrawer summary { color: #b9c5d5 !important; font-size: 12.5px !important; }
+.analysisText { color: #d5dde8 !important; font-size: 14px !important; line-height: 1.82 !important; }
+
+/* ---------- Add Memory ---------- */
+.ingestGrid { gap: 18px !important; }
+.ingestCard,
+.impactCard { padding: 28px !important; }
+.ingestIntro p,
+.impactCard > p:not(.sectionKicker) {
+  color: #bec9d8 !important;
+  font-size: 14.5px !important;
+  line-height: 1.76 !important;
+}
+.learnBadge {
+  color: #a9c4ff !important;
+  background: rgba(79,124,255,.10) !important;
+  border-color: rgba(121,168,255,.25) !important;
+  font-size: 10px !important;
+}
+.learnBadge span {
+  background: #79a8ff !important;
+  box-shadow: 0 0 0 5px rgba(79,124,255,.10) !important;
+}
+.impactCard {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(79,124,255,.12), transparent 34%),
+    linear-gradient(145deg, #151f38, #111827) !important;
+}
+.impactCard.learned {
+  border-color: rgba(96,165,250,.34) !important;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(96,165,250,.17), transparent 36%),
+    linear-gradient(145deg, #172441, #111827) !important;
+}
+.impactIcon,
+.memoryCountAfter {
+  color: #c4d5ff !important;
+  background: rgba(79,124,255,.13) !important;
+  border-color: rgba(121,168,255,.28) !important;
+}
+.flowSteps span {
+  background: rgba(30,41,59,.58) !important;
+  color: #bdc8d8 !important;
+  font-size: 12px !important;
+}
+.syncChips span {
+  color: #bcd0ff !important;
+  background: rgba(79,124,255,.09) !important;
+  border-color: rgba(121,168,255,.22) !important;
+  font-size: 10px !important;
+}
+
+/* ---------- Timeline / memory health ---------- */
+.timelineContent p,
+.memoryHealth > p,
+.developerPanel p { color: #b9c5d5 !important; font-size: 12.5px !important; line-height: 1.7 !important; }
+.timelineContent h4 { color: #f8fafc !important; font-size: 13.5px !important; }
+.timelineDate span { color: #8997ab !important; font-size: 10.5px !important; }
+.timelineLine { background: rgba(148,163,184,.18) !important; }
+.timelineDot { background: #64748b !important; border-color: #111827 !important; box-shadow: 0 0 0 1px #64748b !important; }
+.timelineDot.review { background: #7c9cff !important; box-shadow: 0 0 0 1px #7c9cff, 0 0 0 5px rgba(79,124,255,.09) !important; }
+.healthGrid > div {
+  background: rgba(30,41,59,.62) !important;
+  border-color: rgba(148,163,184,.16) !important;
+}
+.healthGrid span { color: #91a0b6 !important; font-size: 10.5px !important; }
+.healthGrid strong { color: #edf2f8 !important; font-size: 12.5px !important; }
+.developerPanel summary { color: #aab7c8 !important; font-size: 11.5px !important; }
+.developerOutput { background: #080e1b !important; color: #b8c7e3 !important; }
+.productFooter { color: #758399 !important; }
+
+/* ---------- Intelligence Center ---------- */
+#intelligence-center-launcher {
+  border-color: rgba(121,168,255,.34) !important;
+  background: rgba(15,23,42,.97) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 18px 60px rgba(2,6,23,.48) !important;
+}
+section[aria-label="DecisionDNA Intelligence Center"] {
+  background:
+    radial-gradient(circle at 86% 0, rgba(79,124,255,.13), transparent 28%),
+    linear-gradient(180deg, #0f172a, #0b1020) !important;
+  border-color: rgba(148,163,184,.22) !important;
+  color: #f8fafc !important;
+}
+section[aria-label="DecisionDNA Intelligence Center"] > header {
+  background: rgba(15,23,42,.97) !important;
+  border-bottom-color: rgba(148,163,184,.18) !important;
+}
+section[aria-label="DecisionDNA Intelligence Center"] h2,
+section[aria-label="DecisionDNA Intelligence Center"] h3,
+section[aria-label="DecisionDNA Intelligence Center"] h4,
+section[aria-label="DecisionDNA Intelligence Center"] strong { color: #f8fafc !important; }
+section[aria-label="DecisionDNA Intelligence Center"] p,
+section[aria-label="DecisionDNA Intelligence Center"] small,
+section[aria-label="DecisionDNA Intelligence Center"] header span { color: #b7c3d3 !important; }
+section[aria-label="DecisionDNA Intelligence Center"] button:not([aria-label^="Close"]) {
+  border-color: rgba(148,163,184,.18) !important;
+  background: rgba(30,41,59,.52) !important;
+  color: #f8fafc !important;
+}
+section[aria-label="DecisionDNA Intelligence Center"] button:not([aria-label^="Close"]):hover {
+  border-color: rgba(121,168,255,.38) !important;
+  background: rgba(79,124,255,.10) !important;
+}
+
+/* ---------- All mounted intelligence tools ---------- */
+#tool-proposal-guard section,
+#tool-shockwave section,
+#tool-knowledge-gaps section,
+#tool-patterns section,
+#tool-decision-contract section,
+#tool-trust-score section,
+#tool-contradictions section,
+#tool-decision-replay section,
+#tool-drift-scanner section {
+  background:
+    radial-gradient(circle at 90% 0, rgba(79,124,255,.10), transparent 26%),
+    #0f172a !important;
+  border-color: rgba(148,163,184,.20) !important;
+  color: #f8fafc !important;
+}
+
+#tool-proposal-guard section h2,
+#tool-proposal-guard section h3,
+#tool-proposal-guard section h4,
+#tool-shockwave section h2,
+#tool-shockwave section h3,
+#tool-shockwave section h4,
+#tool-knowledge-gaps section h2,
+#tool-knowledge-gaps section h3,
+#tool-knowledge-gaps section h4,
+#tool-patterns section h2,
+#tool-patterns section h3,
+#tool-patterns section h4,
+#tool-decision-contract section h2,
+#tool-decision-contract section h3,
+#tool-decision-contract section h4,
+#tool-trust-score section h2,
+#tool-trust-score section h3,
+#tool-trust-score section h4,
+#tool-contradictions section h2,
+#tool-contradictions section h3,
+#tool-contradictions section h4,
+#tool-decision-replay section h2,
+#tool-decision-replay section h3,
+#tool-decision-replay section h4,
+#tool-drift-scanner section h2,
+#tool-drift-scanner section h3,
+#tool-drift-scanner section h4 {
+  color: #f8fafc !important;
+}
+
+#tool-proposal-guard section p,
+#tool-shockwave section p,
+#tool-knowledge-gaps section p,
+#tool-patterns section p,
+#tool-decision-contract section p,
+#tool-trust-score section p,
+#tool-contradictions section p,
+#tool-decision-replay section p,
+#tool-drift-scanner section p {
+  color: #c0cad8 !important;
+  line-height: 1.68 !important;
+}
+
+#tool-proposal-guard section article,
+#tool-shockwave section article,
+#tool-knowledge-gaps section article,
+#tool-patterns section article,
+#tool-decision-contract section article,
+#tool-trust-score section article,
+#tool-contradictions section article,
+#tool-decision-replay section article,
+#tool-drift-scanner section article {
+  background: rgba(30,41,59,.56) !important;
+  border-color: rgba(148,163,184,.17) !important;
+}
+
+#tool-proposal-guard textarea,
+#tool-knowledge-gaps textarea,
+#tool-proposal-guard input,
+#tool-knowledge-gaps input {
+  background: #0b1325 !important;
+  color: #f8fafc !important;
+  border-color: rgba(148,163,184,.25) !important;
+  font-size: 14px !important;
+}
+
+#tool-proposal-guard textarea:focus,
+#tool-knowledge-gaps textarea:focus,
+#tool-proposal-guard input:focus,
+#tool-knowledge-gaps input:focus {
+  border-color: rgba(96,165,250,.64) !important;
+  box-shadow: 0 0 0 3px rgba(79,124,255,.12) !important;
+}
+
+/* Keep success green only where it communicates status. */
+.learnBadge.success,
+.healthGrid .healthy,
+.timelineDot.success { color: var(--success) !important; }
+
+/* ---------- Readability floor ---------- */
+button,
+input,
+textarea,
+select { font-size: 13.5px !important; }
+
+p { text-wrap: pretty; }
+h1, h2, h3, h4, strong { text-wrap: balance; }
+
+@media (max-width: 820px) {
+  .contentWrap { width: min(100% - 32px, 1320px) !important; }
+  .heroCopy > p:last-child { font-size: 16px !important; }
+}
+
+@media (max-width: 560px) {
+  body { font-size: 15px !important; }
+  .heroCopy h2 { font-size: 38px !important; }
+  .sectionHeader h3,
+  .askIntro h3,
+  .memoryHealth h3 { font-size: 27px !important; }
+}
