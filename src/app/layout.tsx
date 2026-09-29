@@ -3,6 +3,7 @@ import AuthShell from "@/components/auth-shell";
 import DriftScanner from "@/components/drift-scanner";
 import ProposalGuard from "@/components/proposal-guard";
 import PatternIntelligence from "@/components/pattern-intelligence";
+import DecisionReplay from "@/components/decision-replay";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,6 +20,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             {children}
             <ProposalGuard />
             <PatternIntelligence />
+            <div style={{ position: "fixed", right: 22, bottom: 96, zIndex: 65, width: 238 }}>
+              <DecisionReplay decisionKey="DEC-021" />
+            </div>
             <DriftScanner />
           </>
         </AuthShell>
