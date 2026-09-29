@@ -58,6 +58,8 @@ jobs:
           set -euo pipefail
           routes=(
             "/api/hindsight/status"
+            "/api/hindsight/setup"
+            "/api/hindsight/seed"
             "/api/hindsight/recall"
             "/api/hindsight/reflect"
             "/api/hindsight/drift"
