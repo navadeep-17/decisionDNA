@@ -355,7 +355,7 @@ export default function Home() {
             <h1>Decision intelligence</h1>
           </div>
           <div className="topActions">
-            <div className="memoryLive"><span className="liveDot" />Authenticated live data</div>
+            <div className="memoryLive"><span className="liveDot" />Memory connected</div>
             <button className="secondaryBtn compact" onClick={() => document.getElementById("ingest")?.scrollIntoView({ behavior: "smooth" })}>Add memory</button>
             <button className="primaryBtn compact" onClick={() => document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" })}>Ask memory</button>
           </div>
@@ -367,7 +367,7 @@ export default function Home() {
               <p className="sectionKicker">ORGANIZATIONAL MEMORY</p>
               <h2>Your team remembers what happened.<br /><span>DecisionDNA remembers why.</span></h2>
               <p>
-                Supabase stores authenticated product state and decision workflow. Hindsight stores semantic and temporal organizational memory and reasons across it.
+                Connect decisions to the rationale, constraints, incidents, alternatives, and outcomes behind them—then recognize when new evidence changes the context.
               </p>
             </div>
             <div className="memoryPulse">
@@ -383,12 +383,12 @@ export default function Home() {
             <article className="statCard">
               <span className="statLabel">Organizational events</span>
               <strong>{dbLoading ? "—" : events.length}</strong>
-              <span className="statDelta positive">Supabase timeline records</span>
+              <span className="statDelta positive">Recorded organizational history</span>
             </article>
             <article className="statCard">
               <span className="statLabel">Extracted memories</span>
               <strong>{memoryTotal ?? "—"}</strong>
-              <span className="statDelta positive">Hindsight knowledge units</span>
+              <span className="statDelta positive">Persistent memory units</span>
             </article>
             <article className="statCard">
               <span className="statLabel">Tracked decisions</span>
@@ -408,7 +408,7 @@ export default function Home() {
                 <p className="sectionKicker">LIVE MEMORY INGESTION</p>
                 <h3>Teach DecisionDNA something new.</h3>
               </div>
-              <span className="smallMeta">Supabase → Hindsight → impact analysis</span>
+              <span className="smallMeta">Persist → remember → connect → review</span>
             </div>
 
             <div className="ingestGrid">
@@ -420,9 +420,9 @@ export default function Home() {
                 }}
               >
                 <div className="ingestIntro">
-                  <span className="learnBadge"><span /> LIVE DEMO EVENT</span>
+                  <span className="learnBadge"><span /> NEW ORGANIZATIONAL EVENT</span>
                   <p>
-                    Add a new organizational event. DecisionDNA persists the event, teaches Hindsight, then immediately checks which historical decisions may be affected.
+                    Add evidence from the organization. DecisionDNA persists it, teaches Hindsight, and immediately checks which historical decisions may be affected.
                   </p>
                 </div>
 
@@ -488,13 +488,13 @@ export default function Home() {
                     <p className="sectionKicker">WHY THIS MATTERS</p>
                     <h4>Make the memory change visible.</h4>
                     <p>
-                      In the demo, this is the moment judges see that DecisionDNA is not a static chatbot. A new fact becomes persistent memory and immediately changes the context used to evaluate old decisions.
+                      A new fact becomes persistent organizational memory and immediately changes the context used to evaluate historical decisions. Every impact stays traceable to evidence and remains subject to human review.
                     </p>
                     <div className="flowSteps">
-                      <span>1 · Store event</span>
-                      <span>2 · Retain in Hindsight</span>
-                      <span>3 · Recall related history</span>
-                      <span>4 · Analyze decision impact</span>
+                      <span>1 · Persist event</span>
+                      <span>2 · Retain memory</span>
+                      <span>3 · Recall related context</span>
+                      <span>4 · Trace decision impact</span>
                     </div>
                   </>
                 ) : ingestResult.ok ? (
@@ -507,7 +507,7 @@ export default function Home() {
                       <strong className="memoryCountAfter">{ingestResult.memoryTotal ?? memoryTotal ?? "—"}</strong>
                     </div>
                     <div className="syncChips">
-                      <span>✓ Supabase stored</span>
+                      <span>✓ Event persisted</span>
                       <span>✓ Hindsight retained</span>
                       <span>✓ Impact analyzed</span>
                     </div>
@@ -544,7 +544,7 @@ export default function Home() {
           <section id="decisions" className="sectionBlock">
             <div className="sectionHeader">
               <div><p className="sectionKicker">DECISION HEALTH</p><h3>Decisions requiring attention</h3></div>
-              <span className="smallMeta">Supabase state + Hindsight evidence</span>
+              <span className="smallMeta">Current state + remembered evidence</span>
             </div>
 
             <article className="decisionCard">
@@ -564,7 +564,7 @@ export default function Home() {
               <div className="decisionAside">
                 <div className="confidenceRing"><strong>{dec021?.confidence ? `${Math.round(dec021.confidence * 100)}%` : "High"}</strong><span>confidence</span></div>
                 <button className="primaryBtn" disabled={!!busy || !dec021} onClick={runDriftReview}>
-                  {busy === "Decision Drift" ? "Reviewing history…" : "Run live review"}
+                  {busy === "Decision Drift" ? "Reviewing history…" : "Review decision"}
                 </button>
               </div>
             </article>
@@ -572,7 +572,7 @@ export default function Home() {
             {drift ? (
               <article className="driftResult">
                 <div className="driftResultHeader">
-                  <div><span className="resultEyebrow">LIVE HINDSIGHT ANALYSIS</span><h4>{drift.ok ? "Decision Drift detected" : "Review failed"}</h4></div>
+                  <div><span className="resultEyebrow">HINDSIGHT ANALYSIS</span><h4>{drift.ok ? "Decision Drift detected" : "Review failed"}</h4></div>
                   {drift.ok ? <span className="evidenceCount">{drift.evidenceCount ?? 0} evidence units</span> : null}
                 </div>
                 <div className="analysisText">{formatAnswer(drift.result?.text || drift.error)}</div>
@@ -631,7 +631,7 @@ export default function Home() {
           <section id="timeline" className="sectionBlock">
             <div className="sectionHeader">
               <div><p className="sectionKicker">ORGANIZATIONAL TIMELINE</p><h3>How DEC-021 evolved over time</h3></div>
-              <span className="smallMeta">Loaded from Supabase events</span>
+              <span className="smallMeta">Evidence ordered by event date</span>
             </div>
             <div className="evidenceList">
               {events.map((event, index) => (
@@ -648,7 +648,7 @@ export default function Home() {
 
           <section id="memory" className="sectionBlock">
             <div className="sectionHeader">
-              <div><p className="sectionKicker">MEMORY HEALTH</p><h3>Two systems, one product.</h3></div>
+              <div><p className="sectionKicker">MEMORY HEALTH</p><h3>Persistent memory, connected workflow.</h3></div>
             </div>
             <section className="statsGrid">
               <article className="statCard"><span className="statLabel">Hindsight</span><strong>{memoryTotal ?? "—"}</strong><span className="statDelta positive">Semantic + temporal memories</span></article>
