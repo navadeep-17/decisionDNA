@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AuthShell from "@/components/auth-shell";
 import DriftScanner from "@/components/drift-scanner";
 import ProposalGuard from "@/components/proposal-guard";
+import PatternIntelligence from "@/components/pattern-intelligence";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <>
             {children}
             <ProposalGuard />
+            <PatternIntelligence />
             <DriftScanner />
           </>
         </AuthShell>
