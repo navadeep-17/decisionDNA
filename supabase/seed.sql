@@ -40,6 +40,16 @@ with p as (
   where o.slug='novapay' and p.slug='checkout'
 )
 insert into public.decisions (organization_id, project_id, decision_key, title, summary, decision, rationale, status, confidence, decision_date)
+select organization_id, project_id, 'DEC-017', 'Redis Trial Approved', 'Limited rollout of self-managed Redis for checkout sessions.', 'Approve a limited Redis trial subject to memory and staffing constraints.', 'Evaluate lower-latency session storage while ensuring memory stays below 65 percent under peak load and no additional infrastructure headcount is required.', 'superseded', 0.95, '2026-01-18T11:00:00Z'
+from p
+on conflict (organization_id, decision_key) do update set status='superseded', confidence=0.95, rationale=excluded.rationale;
+
+with p as (
+  select p.id as project_id, p.organization_id
+  from public.projects p join public.organizations o on o.id=p.organization_id
+  where o.slug='novapay' and p.slug='checkout'
+)
+insert into public.decisions (organization_id, project_id, decision_key, title, summary, decision, rationale, status, confidence, decision_date)
 select organization_id, project_id, 'DEC-021', 'Redis Session Architecture', 'Return checkout sessions to PostgreSQL after the Redis incident.', 'Use PostgreSQL-backed checkout sessions instead of self-managed Redis.', 'INC-142 exposed memory-pressure risk and unsustainable operational burden for the small Platform team.', 'review_suggested', 0.94, '2026-02-05T16:00:00Z'
 from p
 on conflict (organization_id, decision_key) do update set status='review_suggested', confidence=0.94, rationale=excluded.rationale;
