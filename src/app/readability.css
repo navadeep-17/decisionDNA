@@ -12,6 +12,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+section[id] {
+  scroll-margin-top: 112px;
+}
+
 button,
 input,
 textarea,
@@ -27,6 +31,23 @@ a:focus-visible,
 summary:focus-visible {
   outline: 2px solid rgba(184, 255, 225, 0.7);
   outline-offset: 3px;
+}
+
+.navDivider {
+  height: 1px;
+  margin: 9px 8px 5px;
+  background: var(--border);
+}
+
+.navUtilityItem {
+  width: 100%;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+}
+
+.navUtilityItem span {
+  color: var(--accent-strong);
 }
 
 .topEyebrow {
@@ -56,7 +77,17 @@ summary:focus-visible {
   font-size: 13px;
 }
 
-.memoryPulse > span,
+.memoryPulse > span {
+  display: none;
+}
+
+.memoryPulse::after {
+  content: "NovaPay organizational memory";
+  color: var(--muted-2);
+  font-size: 11px;
+  text-align: center;
+}
+
 .smallMeta,
 .statDelta,
 .workspaceBadge span:last-child {
