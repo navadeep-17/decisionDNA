@@ -15,6 +15,7 @@ import "./globals.css";
 import "./ingest.css";
 import "./readability.css";
 import "./intelligence-center.global.css";
+import "./theme-v2.css";
 
 export const metadata: Metadata = {
   title: "DecisionDNA",
