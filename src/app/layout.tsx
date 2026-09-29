@@ -11,11 +11,13 @@ import DecisionContract from "@/components/decision-contract";
 import KnowledgeGapRadar from "@/components/knowledge-gap-radar";
 import IntelligenceCenter from "@/components/intelligence-center";
 import WorkspaceNavigationEnhancer from "@/components/workspace-navigation-enhancer";
+import ProductExperienceEnhancer from "@/components/product-experience-enhancer";
 import "./globals.css";
 import "./ingest.css";
 import "./readability.css";
 import "./intelligence-center.global.css";
 import "./theme-v2.css";
+import "./product-polish.css";
 
 export const metadata: Metadata = {
   title: "DecisionDNA",
@@ -30,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <>
             {children}
             <WorkspaceNavigationEnhancer />
+            <ProductExperienceEnhancer />
 
             <div id="tool-proposal-guard" className="intelligenceToolMount">
               <ProposalGuard />
