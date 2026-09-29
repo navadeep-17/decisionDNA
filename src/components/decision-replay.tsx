@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import styles from "./decision-replay.module.css";
+import traceStyles from "./decision-replay-trace.module.css";
 
 type AssumptionStatus = "ACTIVE" | "WEAKENED" | "INVALIDATED" | "UNKNOWN";
 
@@ -10,6 +11,14 @@ type Evidence = {
   rank: number;
   text: string;
   type?: string;
+};
+
+type ReplayEvent = {
+  external_id: string | null;
+  event_type: string;
+  title: string;
+  content: string;
+  event_date: string;
 };
 
 type ReplayResponse = {
@@ -24,10 +33,12 @@ type ReplayResponse = {
   then?: {
     eventCount: number;
     summary: string;
+    events?: ReplayEvent[];
   };
   now?: {
     eventCount: number;
     summary: string;
+    events?: ReplayEvent[];
   };
   decisionDelta?: string;
   humanAction?: string;
@@ -51,6 +62,24 @@ type Props = {
 
 function label(status: AssumptionStatus) {
   return status.replaceAll("_", " ");
+}
+
+function shortDate(value?: string) {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("en", { month: "short", day: "2-digit" }).format(new Date(value));
+}
+
+function TraceNode({ event, phase }: { event: ReplayEvent; phase: "THEN" | "NOW" }) {
+  return (
+    <article className={`${traceStyles.node} ${phase === "THEN" ? traceStyles.nodeThen : traceStyles.nodeNow}`}>
+      <div className={traceStyles.phase}>
+        <strong>{phase}</strong>
+        <span>{shortDate(event.event_date)}</span>
+      </div>
+      <h4>{event.external_id ? `${event.external_id} · ${event.title}` : event.title}</h4>
+      <p>{event.content}</p>
+    </article>
+  );
 }
 
 export default function DecisionReplay({ decisionKey }: Props) {
@@ -90,6 +119,9 @@ export default function DecisionReplay({ decisionKey }: Props) {
       setBusy(false);
     }
   }
+
+  const thenTrace = (data?.then?.events || []).slice(-3);
+  const nowTrace = (data?.now?.events || []).slice(0, 3);
 
   return (
     <>
@@ -140,6 +172,35 @@ export default function DecisionReplay({ decisionKey }: Props) {
                     <p>{data.now?.summary}</p>
                   </article>
                 </div>
+
+                <section className={traceStyles.traceSection}>
+                  <div className={traceStyles.traceHeader}>
+                    <div>
+                      <p>DECISION DNA CAUSAL TRACE</p>
+                      <h3>How the evidence evolved around the decision</h3>
+                    </div>
+                    <span>Supabase chronology + Hindsight reasoning</span>
+                  </div>
+                  <div className={traceStyles.trace}>
+                    {thenTrace.map((event, index) => (
+                      <span key={`then-${event.external_id || index}`} style={{ display: "contents" }}>
+                        <TraceNode event={event} phase="THEN" />
+                        <span className={traceStyles.connector}>→</span>
+                      </span>
+                    ))}
+                    <article className={traceStyles.decisionMarker}>
+                      <span>DECISION</span>
+                      <strong>{data.decision?.key} · {data.decision?.title}</strong>
+                      <small>{data.decision?.date ? new Date(data.decision.date).toLocaleDateString() : ""}</small>
+                    </article>
+                    {nowTrace.map((event, index) => (
+                      <span key={`now-${event.external_id || index}`} style={{ display: "contents" }}>
+                        <span className={traceStyles.connector}>→</span>
+                        <TraceNode event={event} phase="NOW" />
+                      </span>
+                    ))}
+                  </div>
+                </section>
 
                 <article className={styles.deltaCard}>
                   <div>
