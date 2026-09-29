@@ -8,6 +8,7 @@ import ContradictionRadar from "@/components/contradiction-radar";
 import DecisionTrustScore from "@/components/decision-trust-score";
 import DecisionShockwave from "@/components/decision-shockwave";
 import DecisionContract from "@/components/decision-contract";
+import KnowledgeGapRadar from "@/components/knowledge-gap-radar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             {children}
             <ProposalGuard />
             <DecisionShockwave />
+            <KnowledgeGapRadar />
             <PatternIntelligence />
             <DecisionContract decisionKey="DEC-021" />
             <DecisionTrustScore decisionKey="DEC-021" />
