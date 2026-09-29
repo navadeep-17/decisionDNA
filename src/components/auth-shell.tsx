@@ -3,6 +3,7 @@
 import { FormEvent, ReactNode, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import styles from "./auth-shell.module.css";
 
 type AuthMode = "signin" | "signup";
 
@@ -57,7 +58,6 @@ export default function AuthShell({ children }: Props) {
         role: "member",
       });
 
-      // 23505 means membership already exists, which is expected on later sign-ins.
       if (error && error.code !== "23505") {
         console.error("Failed to join demo workspace", error);
       }
@@ -93,9 +93,9 @@ export default function AuthShell({ children }: Props) {
 
   if (loading) {
     return (
-      <main className="authScreen">
-        <div className="authCard authLoading">
-          <div className="authLogo">D</div>
+      <main className={styles.screen}>
+        <div className={`${styles.card} ${styles.loading}`}>
+          <div className={styles.logo}>D</div>
           <p>Loading DecisionDNA…</p>
         </div>
       </main>
@@ -104,16 +104,16 @@ export default function AuthShell({ children }: Props) {
 
   if (!session) {
     return (
-      <main className="authScreen">
-        <section className="authCard">
-          <div className="authLogo">D</div>
-          <p className="authEyebrow">DECISIONDNA</p>
+      <main className={styles.screen}>
+        <section className={styles.card}>
+          <div className={styles.logo}>D</div>
+          <p className={styles.eyebrow}>DECISIONDNA</p>
           <h1>{mode === "signin" ? "Enter the NovaPay workspace" : "Create your DecisionDNA account"}</h1>
-          <p className="authCopy">
+          <p className={styles.copy}>
             Sign in to explore the live organizational-memory demo powered by Hindsight and Supabase.
           </p>
 
-          <form onSubmit={submit} className="authForm">
+          <form onSubmit={submit} className={styles.form}>
             <label>
               Email
               <input
@@ -134,16 +134,16 @@ export default function AuthShell({ children }: Props) {
                 required
               />
             </label>
-            <button className="primaryBtn authSubmit" disabled={submitting}>
+            <button className={styles.submit} disabled={submitting}>
               {submitting ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
             </button>
           </form>
 
-          {message ? <p className="authMessage">{message}</p> : null}
+          {message ? <p className={styles.message}>{message}</p> : null}
 
           <button
             type="button"
-            className="authSwitch"
+            className={styles.switch}
             onClick={() => {
               setMode(mode === "signin" ? "signup" : "signin");
               setMessage("");
@@ -158,7 +158,7 @@ export default function AuthShell({ children }: Props) {
 
   return (
     <>
-      <div className="sessionBar">
+      <div className={styles.sessionBar}>
         <span>{session.user.email}</span>
         <button
           type="button"
