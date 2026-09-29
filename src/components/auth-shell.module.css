@@ -1,0 +1,153 @@
+.screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at 75% 15%, rgba(85, 232, 173, 0.12), transparent 32%),
+    #07100f;
+}
+
+.card {
+  width: min(460px, 100%);
+  border: 1px solid rgba(184, 255, 225, 0.14);
+  border-radius: 24px;
+  padding: 34px;
+  background: rgba(13, 27, 24, 0.94);
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.35);
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #b8ffe1;
+  color: #062117;
+  font-weight: 950;
+  font-size: 20px;
+}
+
+.eyebrow {
+  margin: 28px 0 8px;
+  color: #55e8ad;
+  font-size: 10px;
+  letter-spacing: .17em;
+  font-weight: 850;
+}
+
+.card h1 {
+  margin: 0;
+  color: #eff8f4;
+  font-size: clamp(30px, 7vw, 42px);
+  line-height: 1.02;
+  letter-spacing: -.045em;
+}
+
+.copy {
+  margin: 16px 0 26px;
+  color: #8ca29b;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.form {
+  display: grid;
+  gap: 15px;
+}
+
+.form label {
+  display: grid;
+  gap: 7px;
+  color: #9db2ab;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.form input {
+  width: 100%;
+  border: 1px solid rgba(184, 255, 225, 0.13);
+  border-radius: 11px;
+  padding: 13px 14px;
+  background: #091512;
+  color: #eff8f4;
+  outline: none;
+  font: inherit;
+}
+
+.form input:focus {
+  border-color: rgba(85, 232, 173, 0.42);
+  box-shadow: 0 0 0 3px rgba(85, 232, 173, 0.07);
+}
+
+.submit {
+  border: 0;
+  border-radius: 11px;
+  padding: 13px 16px;
+  background: #b8ffe1;
+  color: #062117;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.message {
+  margin: 15px 0 0;
+  border: 1px solid rgba(246, 207, 122, .18);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #f6cf7a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.switch {
+  width: 100%;
+  margin-top: 16px;
+  border: 0;
+  background: transparent;
+  color: #85efbd;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.loading {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  color: #8ca29b;
+}
+
+.sessionBar {
+  position: fixed;
+  z-index: 60;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(184, 255, 225, .13);
+  border-radius: 999px;
+  padding: 7px 8px 7px 12px;
+  background: rgba(6, 15, 13, .92);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .25);
+  color: #8ca29b;
+  font-size: 10px;
+}
+
+.sessionBar button {
+  border: 1px solid rgba(184, 255, 225, .13);
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: #12231f;
+  color: #d6e9e2;
+  cursor: pointer;
+  font-size: 10px;
+}
