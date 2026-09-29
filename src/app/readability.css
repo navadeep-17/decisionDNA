@@ -1,0 +1,155 @@
+/* DecisionDNA readability layer — intentionally loaded after globals.css */
+
+:root {
+  --muted: #9aafa8;
+  --muted-2: #748b83;
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font-size: 13px;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid rgba(184, 255, 225, 0.7);
+  outline-offset: 3px;
+}
+
+.topEyebrow {
+  font-size: 11px;
+  color: #7f968e;
+}
+
+.topbar h1 {
+  font-size: 22px;
+}
+
+.memoryLive {
+  font-size: 12px;
+}
+
+.sectionKicker {
+  font-size: 11px;
+}
+
+.heroCopy > p:last-child {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #a9bbb5;
+}
+
+.memoryPulse strong {
+  font-size: 13px;
+}
+
+.memoryPulse > span,
+.smallMeta,
+.statDelta,
+.workspaceBadge span:last-child {
+  font-size: 11px;
+}
+
+.statLabel {
+  font-size: 12px;
+}
+
+.sectionHeader h3,
+.askIntro h3,
+.memoryHealth h3 {
+  font-size: 27px;
+}
+
+.reviewBadge {
+  font-size: 10px;
+}
+
+.decisionId {
+  font-size: 11px;
+}
+
+.decisionSummary {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #a8bbb4;
+}
+
+.reasonGrid span {
+  font-size: 10px;
+  color: #7d938b;
+}
+
+.reasonGrid strong {
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  font-size: 12px;
+  padding: 12px 16px;
+}
+
+.resultEyebrow,
+.evidenceCount {
+  font-size: 10.5px;
+}
+
+.analysisText {
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: #d0dfda;
+}
+
+.evidenceDrawer summary {
+  font-size: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.evidenceItem,
+.timelineItem,
+.historyItem {
+  line-height: 1.65;
+}
+
+textarea,
+input,
+select {
+  color: #edf7f3;
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: #6f847c;
+  opacity: 1;
+}
+
+@media (max-width: 780px) {
+  body {
+    font-size: 14px;
+  }
+
+  .heroCopy > p:last-child {
+    font-size: 15px;
+  }
+
+  .sectionHeader h3,
+  .askIntro h3,
+  .memoryHealth h3 {
+    font-size: 24px;
+  }
+}
