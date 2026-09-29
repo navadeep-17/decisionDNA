@@ -48,6 +48,7 @@ type DriftEvidence = {
   rank?: number;
   text?: string;
   type?: string;
+  score?: number;
 };
 
 type DriftResponse = {
@@ -64,6 +65,17 @@ type BankStatus = {
   ok?: boolean;
   bankId?: string;
   total?: number;
+};
+
+type IngestResponse = {
+  ok?: boolean;
+  event?: EventRow;
+  hindsightDocumentId?: string;
+  memoryTotal?: number;
+  impactEvidenceCount?: number;
+  impactEvidence?: DriftEvidence[];
+  impact?: string;
+  error?: string;
 };
 
 type ApiState = {
@@ -99,6 +111,11 @@ function eventLabel(event: EventRow) {
   return event.external_id ? `${event.external_id} · ${event.title}` : event.title;
 }
 
+function localDateTimeInput(date = new Date()) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
 export default function Home() {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [decisions, setDecisions] = useState<DecisionRow[]>([]);
@@ -111,6 +128,14 @@ export default function Home() {
   const [bankId, setBankId] = useState("decisiondna-novapay");
   const [askResult, setAskResult] = useState<ApiState>(null);
   const [drift, setDrift] = useState<DriftResponse | null>(null);
+  const [ingestResult, setIngestResult] = useState<IngestResponse | null>(null);
+  const [ingestForm, setIngestForm] = useState({
+    eventType: "outcome",
+    title: "Managed Redis passes checkout shadow test",
+    eventDate: localDateTimeInput(),
+    content:
+      "NovaPay completed a checkout shadow test on managed Redis Cloud at 4.5x projected peak traffic. Automatic scaling handled the burst with zero session loss and no manual intervention from the Platform team, directly addressing the capacity and operational risks that drove DEC-021.",
+  });
 
   const dec021 = useMemo(
     () => decisions.find((decision) => decision.decision_key === "DEC-021") ?? null,
@@ -221,6 +246,32 @@ export default function Home() {
     }
   }
 
+  async function ingestMemory() {
+    setBusy("Memory ingestion");
+    setIngestResult(null);
+
+    try {
+      const data = await post<IngestResponse>("/api/memory/ingest", {
+        eventType: ingestForm.eventType,
+        title: ingestForm.title,
+        content: ingestForm.content,
+        eventDate: new Date(ingestForm.eventDate).toISOString(),
+        projectSlug: "checkout",
+      });
+
+      setIngestResult(data);
+      if (typeof data.memoryTotal === "number") setMemoryTotal(data.memoryTotal);
+      await loadWorkspaceData();
+    } catch (error) {
+      setIngestResult({
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function ask(mode: "recall" | "reflect") {
     const label = mode === "recall" ? "Evidence recall" : "Memory synthesis";
     setBusy(label);
@@ -281,6 +332,7 @@ export default function Home() {
 
         <nav className="navList">
           <a className="navItem active" href="#overview"><span>◫</span>Overview</a>
+          <a className="navItem" href="#ingest"><span>＋</span>Add memory</a>
           <a className="navItem" href="#decisions"><span>◇</span>Decisions</a>
           <a className="navItem" href="#ask"><span>◎</span>Ask memory</a>
           <a className="navItem" href="#timeline"><span>↝</span>Timeline</a>
@@ -304,6 +356,7 @@ export default function Home() {
           </div>
           <div className="topActions">
             <div className="memoryLive"><span className="liveDot" />Authenticated live data</div>
+            <button className="secondaryBtn compact" onClick={() => document.getElementById("ingest")?.scrollIntoView({ behavior: "smooth" })}>Add memory</button>
             <button className="primaryBtn compact" onClick={() => document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" })}>Ask memory</button>
           </div>
         </header>
@@ -347,6 +400,145 @@ export default function Home() {
               <strong>{dbLoading ? "—" : decisionsNeedingReview}</strong>
               <span className="statDelta warningText">{reviewCount} persisted review{reviewCount === 1 ? "" : "s"}</span>
             </article>
+          </section>
+
+          <section id="ingest" className="sectionBlock">
+            <div className="sectionHeader">
+              <div>
+                <p className="sectionKicker">LIVE MEMORY INGESTION</p>
+                <h3>Teach DecisionDNA something new.</h3>
+              </div>
+              <span className="smallMeta">Supabase → Hindsight → impact analysis</span>
+            </div>
+
+            <div className="ingestGrid">
+              <form
+                className="ingestCard"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void ingestMemory();
+                }}
+              >
+                <div className="ingestIntro">
+                  <span className="learnBadge"><span /> LIVE DEMO EVENT</span>
+                  <p>
+                    Add a new organizational event. DecisionDNA persists the event, teaches Hindsight, then immediately checks which historical decisions may be affected.
+                  </p>
+                </div>
+
+                <div className="formGrid">
+                  <label>
+                    Event type
+                    <select
+                      value={ingestForm.eventType}
+                      onChange={(event) => setIngestForm((value) => ({ ...value, eventType: event.target.value }))}
+                    >
+                      <option value="outcome">Outcome</option>
+                      <option value="capability_change">Capability change</option>
+                      <option value="incident">Incident</option>
+                      <option value="investigation">Investigation</option>
+                      <option value="decision">Decision</option>
+                      <option value="constraint">Constraint</option>
+                      <option value="meeting">Meeting</option>
+                      <option value="note">Note</option>
+                    </select>
+                  </label>
+                  <label>
+                    Event date
+                    <input
+                      type="datetime-local"
+                      value={ingestForm.eventDate}
+                      onChange={(event) => setIngestForm((value) => ({ ...value, eventDate: event.target.value }))}
+                      required
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  Title
+                  <input
+                    value={ingestForm.title}
+                    onChange={(event) => setIngestForm((value) => ({ ...value, title: event.target.value }))}
+                    required
+                  />
+                </label>
+
+                <label>
+                  Organizational evidence
+                  <textarea
+                    rows={6}
+                    value={ingestForm.content}
+                    onChange={(event) => setIngestForm((value) => ({ ...value, content: event.target.value }))}
+                    required
+                  />
+                </label>
+
+                <div className="ingestActions">
+                  <span>Project: Checkout · Org: NovaPay</span>
+                  <button className="primaryBtn" disabled={!!busy}>
+                    {busy === "Memory ingestion" ? "Learning + analyzing…" : "Teach DecisionDNA"}
+                  </button>
+                </div>
+              </form>
+
+              <article className={`impactCard ${ingestResult?.ok ? "learned" : ""}`}>
+                {!ingestResult ? (
+                  <>
+                    <div className="impactIcon">↯</div>
+                    <p className="sectionKicker">WHY THIS MATTERS</p>
+                    <h4>Make the memory change visible.</h4>
+                    <p>
+                      In the demo, this is the moment judges see that DecisionDNA is not a static chatbot. A new fact becomes persistent memory and immediately changes the context used to evaluate old decisions.
+                    </p>
+                    <div className="flowSteps">
+                      <span>1 · Store event</span>
+                      <span>2 · Retain in Hindsight</span>
+                      <span>3 · Recall related history</span>
+                      <span>4 · Analyze decision impact</span>
+                    </div>
+                  </>
+                ) : ingestResult.ok ? (
+                  <>
+                    <div className="impactSuccessRow">
+                      <div>
+                        <span className="learnBadge success"><span /> MEMORY LEARNED</span>
+                        <h4>{ingestResult.event?.title || "New organizational memory"}</h4>
+                      </div>
+                      <strong className="memoryCountAfter">{ingestResult.memoryTotal ?? memoryTotal ?? "—"}</strong>
+                    </div>
+                    <div className="syncChips">
+                      <span>✓ Supabase stored</span>
+                      <span>✓ Hindsight retained</span>
+                      <span>✓ Impact analyzed</span>
+                    </div>
+                    <div className="impactAnalysis">
+                      <span>IMMEDIATE MEMORY IMPACT</span>
+                      <div className="analysisText compactText">{formatAnswer(ingestResult.impact)}</div>
+                    </div>
+                    <div className="impactFooter">
+                      <span>{ingestResult.impactEvidenceCount ?? 0} related memories recalled</span>
+                      <button
+                        className="primaryBtn"
+                        disabled={!!busy || !dec021}
+                        onClick={() => {
+                          document.getElementById("decisions")?.scrollIntoView({ behavior: "smooth" });
+                          void runDriftReview();
+                        }}
+                      >
+                        Re-evaluate DEC-021
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="impactIcon error">!</div>
+                    <p className="sectionKicker">INGESTION ERROR</p>
+                    <h4>Memory was not fully synchronized.</h4>
+                    <p>{ingestResult.error}</p>
+                  </>
+                )}
+              </article>
+            </div>
           </section>
 
           <section id="decisions" className="sectionBlock">
