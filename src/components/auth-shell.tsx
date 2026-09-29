@@ -14,6 +14,7 @@ type Props = {
 export default function AuthShell({ children }: Props) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [workspaceReady, setWorkspaceReady] = useState(false);
   const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +31,7 @@ export default function AuthShell({ children }: Props) {
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
+      setWorkspaceReady(false);
       setLoading(false);
     });
 
@@ -37,8 +39,19 @@ export default function AuthShell({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!session) return;
-    void ensureDemoMembership(session.user.id);
+    if (!session) {
+      setWorkspaceReady(false);
+      return;
+    }
+
+    let cancelled = false;
+    ensureDemoMembership(session.user.id).finally(() => {
+      if (!cancelled) setWorkspaceReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [session]);
 
   async function ensureDemoMembership(userId: string) {
@@ -50,7 +63,7 @@ export default function AuthShell({ children }: Props) {
         .eq("slug", "novapay")
         .single();
 
-      if (orgError || !org) return;
+      if (orgError || !org) throw orgError || new Error("NovaPay demo workspace not found");
 
       const { error } = await supabase.from("organization_members").insert({
         organization_id: org.id,
@@ -58,9 +71,7 @@ export default function AuthShell({ children }: Props) {
         role: "member",
       });
 
-      if (error && error.code !== "23505") {
-        console.error("Failed to join demo workspace", error);
-      }
+      if (error && error.code !== "23505") throw error;
     } catch (error) {
       console.error("Failed to initialize demo workspace", error);
     }
@@ -91,12 +102,12 @@ export default function AuthShell({ children }: Props) {
     }
   }
 
-  if (loading) {
+  if (loading || (session && !workspaceReady)) {
     return (
       <main className={styles.screen}>
         <div className={`${styles.card} ${styles.loading}`}>
           <div className={styles.logo}>D</div>
-          <p>Loading DecisionDNA…</p>
+          <p>{session ? "Opening NovaPay workspace…" : "Loading DecisionDNA…"}</p>
         </div>
       </main>
     );
@@ -160,10 +171,7 @@ export default function AuthShell({ children }: Props) {
     <>
       <div className={styles.sessionBar}>
         <span>{session.user.email}</span>
-        <button
-          type="button"
-          onClick={() => void getSupabaseBrowserClient().auth.signOut()}
-        >
+        <button type="button" onClick={() => void getSupabaseBrowserClient().auth.signOut()}>
           Sign out
         </button>
       </div>
