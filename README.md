@@ -2,9 +2,9 @@
 
 # DecisionDNA
 
-### Organizational memory that remembers not just **what** was decided — but **why**.
+### Your company remembers what it decided. DecisionDNA remembers **why**.
 
-DecisionDNA is an organizational decision-memory system that preserves decisions, assumptions, constraints, evidence, and later outcomes so teams can detect when the reasoning behind an old decision may no longer be valid.
+DecisionDNA is a persistent organizational-memory agent that captures the rationale, assumptions, constraints, incidents, alternatives, and outcomes behind decisions — then recognizes when later evidence changes the context that made an older decision valid.
 
 **Hindsight · Next.js · TypeScript · Supabase · PostgreSQL**
 
@@ -12,180 +12,224 @@ DecisionDNA is an organizational decision-memory system that preserves decisions
 
 ---
 
-## Why DecisionDNA
+## The Problem
 
-Most teams remember the final decision but gradually lose the context that produced it. Months later, the original constraint may disappear while the decision itself remains unquestioned.
+Teams usually retain the final decision but lose the reasoning that produced it.
 
-DecisionDNA closes that gap by maintaining durable organizational memory and surfacing **Decision Drift** when later events weaken or invalidate the assumptions behind an earlier choice.
+Months later:
 
-It does not automatically rewrite organizational decisions. It brings back the evidence and recommends review when the historical reasoning no longer matches current reality.
+- the original constraint may no longer exist,
+- a rejected alternative may have become viable,
+- a past incident may be forgotten,
+- new evidence may contradict an old assumption,
+- and the organization may unknowingly repeat a previous mistake.
+
+DecisionDNA creates durable organizational memory around **why** decisions were made and continuously makes that reasoning inspectable.
+
+It never autonomously replaces a human decision. It retrieves evidence, explains changed assumptions, and recommends review.
 
 ---
 
 ## Core Product Loop
 
 ```text
-Organizational events
+Organizational event
+        ↓
+Supabase durable source record
         ↓
 Hindsight retain()
         ↓
-Persistent organizational memory
+Persistent semantic + temporal memory
         ↓
-Recall evidence + Reflect across history
+Recall related organizational history
         ↓
-DecisionDNA decision model
+Reflect across decisions, incidents, constraints and outcomes
         ↓
-Decision health + constraint tracking
+DecisionDNA intelligence
         ↓
-Decision Drift detection
+KEEP / REVIEW / NO_IMPACT
         ↓
-REVIEW_SUGGESTED + evidence trail
+Human decision
 ```
 
 ---
 
-## Product Highlights
+## What DecisionDNA Can Do
 
-- **Decision Memory** — store what was decided, why, alternatives considered, and supporting evidence.
-- **Decision Drift** — detect when later events invalidate an original constraint or assumption.
-- **Evidence-backed Review** — show the exact memories and events supporting a suggested review.
-- **Organizational Timeline** — trace a decision from proposal through incidents and changed constraints.
-- **Ask Organizational Memory** — query organizational history using Recall and Reflect modes.
-- **Human-in-the-loop** — DecisionDNA recommends review instead of silently changing architecture or policy.
-- **Separation of concerns** — Hindsight owns semantic memory; Supabase owns application state and workflow.
+### Before a decision
+
+- **Knowledge Gap Radar** — identifies evidence the organization still lacks before a proposal is ready for human review.
+- **Proposal Guard** — surfaces similar prior attempts, rejected alternatives, incidents, and outcomes so teams do not unknowingly repeat history.
+
+### Understand an existing decision
+
+- **Decision Contract** — records assumptions, success criteria, and explicit reversal conditions such as “reconsider if operational ownership becomes managed externally.”
+- **Memory Trust Score** — explains how evidence support, outcomes, consistency, and freshness affect confidence in a decision's rationale today.
+- **Decision Drift** — detects when evidence suggests that an assumption or constraint behind an older decision has materially changed.
+
+### Understand how memory changed
+
+- **Memory Time Travel** — separates what was known when a decision was made from facts learned later.
+- **Decision Shockwave** — traces how a new organizational event affects decisions, assumptions, and lessons.
+- **Contradiction Radar** — separates genuine contradictory memories from normal decision evolution and stale assumptions.
+
+### Learn across the organization
+
+- **Pattern Intelligence** — surfaces recurring organizational patterns and reusable lessons across remembered history.
 
 ---
 
-## Demo Scenario
+## Demo Scenario — NovaPay
 
-The current product uses a synthetic fintech company, **NovaPay**, to demonstrate the full memory loop.
+DecisionDNA currently uses a synthetic fintech company, **NovaPay**, to demonstrate the complete memory lifecycle.
 
-Decision `DEC-021` originally moved checkout sessions away from self-managed Redis after incident `INC-142` exposed an operational constraint. Later, the organization adopts managed Redis, removing the constraint that originally drove the decision.
+### Historical decision
 
-DecisionDNA connects those events and returns:
+`DEC-021` moved checkout sessions back to PostgreSQL after incident `INC-142` exposed Redis memory pressure and an unsustainable operational burden for NovaPay's small Platform team.
+
+The decision explicitly allowed reconsideration if:
+
+- Redis operations became externally managed,
+- Platform capacity substantially increased,
+- or managed Redis demonstrated checkout-scale reliability without session loss or manual intervention.
+
+### Later evidence
+
+NovaPay later adopts managed Redis Cloud, externalizing patching, failover, scaling, backups, and capacity operations.
+
+DecisionDNA connects that new evidence to the original decision contract and recommends:
 
 ```text
 REVIEW_SUGGESTED
 ```
 
-rather than automatically changing the architecture.
+It does **not** automatically migrate the architecture.
 
-The reviewer can inspect the historical evidence that caused the recommendation.
+---
+
+## Why Hindsight Is Central
+
+DecisionDNA intentionally does not recreate a vector-memory system in Supabase.
+
+### Hindsight owns
+
+- persistent semantic and temporal organizational memory,
+- extraction of durable facts and relationships,
+- Recall,
+- Reflect,
+- observations and cross-memory reasoning,
+- changed-context discovery.
+
+### Supabase owns
+
+- authentication,
+- organizations and memberships,
+- projects,
+- durable source events,
+- product-facing decision records,
+- constraints and alternatives,
+- decision contracts,
+- review workflow state,
+- synchronization metadata.
+
+That boundary keeps Hindsight as the intelligence and memory layer while Supabase remains the transactional product-state layer.
 
 ---
 
 ## Architecture
 
 ```text
-                     Organizational events
-                              │
-                              ▼
-                     Hindsight retain()
-                              │
-                              ▼
-                Persistent organizational memory
-                    │                     │
-                    ▼                     ▼
-               recall()               reflect()
-                 evidence         cross-memory reasoning
-                    │                     │
-                    └──────────┬──────────┘
-                               ▼
-                     DecisionDNA product layer
-                               │
-          ┌────────────────────┼────────────────────┐
-          ▼                    ▼                    ▼
-   Decision health      Decision Drift         Timeline
-          │                    │                    │
-          └────────────────────┼────────────────────┘
-                               ▼
-                         Evidence trail
-                               │
-                               ▼
-                            Supabase
+                         User / source event
+                                 │
+                                 ▼
+                    ┌────────────────────────┐
+                    │       Supabase         │
+                    │ durable source record  │
+                    └───────────┬────────────┘
+                                │
+                    stable document identity
+                                │
+                                ▼
+                    ┌────────────────────────┐
+                    │       Hindsight        │
+                    │ retain → recall →      │
+                    │ reflect → observations │
+                    └───────────┬────────────┘
+                                │
+          ┌─────────────────────┼─────────────────────┐
+          ▼                     ▼                     ▼
+   Decision Contract      Decision Drift       Knowledge / Memory
+      + Trust Score         + Shockwave          Intelligence
+          │                     │                     │
+          └─────────────────────┼─────────────────────┘
+                                ▼
+                       Evidence-backed review
+                                │
+                                ▼
+                         Human authority
 ```
 
-### Responsibility Boundary
-
-**Hindsight owns**
-
-- semantic and temporal organizational memory
-- fact/entity/relationship extraction
-- retrieval
-- observations
-- cross-memory reasoning
-
-**Supabase owns**
-
-- users and organizations
-- projects
-- source events
-- product-facing decision records
-- constraints and alternatives
-- evidence links
-- review workflow state
-
-DecisionDNA intentionally does **not** recreate Hindsight with pgvector.
-
 ---
 
-## Current Product Surface
+## Reliability Architecture
 
-The dashboard includes:
+A persistent-memory product must avoid silently drifting between its transactional store and memory store.
 
-- organizational memory health
-- decision-health metrics
-- live `DEC-021` Decision Drift review
-- evidence drawer with retrieved Hindsight memories
-- Ask Organizational Memory with Recall and Reflect modes
-- decision timeline from proposal through changed constraint
-- developer memory setup, seed, and status controls
+DecisionDNA therefore treats Supabase as the durable ingestion record and tracks Hindsight synchronization explicitly.
 
----
+### Idempotent ingestion
 
-## Tech Stack
+Equivalent ingestion requests receive a SHA-256 idempotency fingerprint. Repeating the same request reuses the existing Supabase event instead of creating another logical memory.
 
-### Application
+### Hindsight synchronization lifecycle
 
-- Next.js
-- React
-- TypeScript
-
-### Memory / Intelligence
-
-- Hindsight API
-- retain / recall / reflect memory operations
-
-### Data
-
-- Supabase
-- PostgreSQL
-- Row Level Security-ready product schema
-
----
-
-## Supabase Data Model
-
-The product schema lives at:
+Every live event tracks:
 
 ```text
-supabase/migrations/001_decisiondna_core.sql
+pending → synced
+        ↘ failed → retry → synced
 ```
 
-It includes:
+The event stores:
 
-- organizations
-- organization membership
-- projects
-- events
-- decisions
-- alternatives
-- constraints
-- evidence
-- reviews
-- indexes
-- timestamps
-- initial RLS policies
+- synchronization status,
+- synchronization attempt count,
+- last synchronization error,
+- synchronization timestamp,
+- stable Hindsight document ID.
+
+If Supabase succeeds but Hindsight temporarily fails, the event remains durable and retryable.
+
+### Runtime validation
+
+DecisionDNA uses Zod to validate ingestion payloads and centrally validates Hindsight Recall and Reflect responses before downstream intelligence features consume them.
+
+Unexpected output fails closed rather than silently entering the decision-analysis pipeline.
+
+---
+
+## Data Model
+
+The Supabase schema includes:
+
+- `organizations`
+- `organization_members`
+- `projects`
+- `events`
+- `decisions`
+- `decision_alternatives`
+- `decision_constraints`
+- `decision_evidence`
+- `decision_reviews`
+- `decision_contract_terms`
+
+The current migrations are under:
+
+```text
+supabase/migrations/
+```
+
+Migration `007_event_hindsight_sync_state.sql` adds ingestion idempotency and Hindsight synchronization state.
 
 ---
 
@@ -199,64 +243,120 @@ npm install
 npm run dev
 ```
 
-Required Hindsight configuration:
+Required application configuration:
 
 ```bash
 HINDSIGHT_BASE_URL=https://api.hindsight.vectorize.io
 HINDSIGHT_API_KEY=hsk_...
 HINDSIGHT_BANK_ID=decisiondna-novapay
-```
 
-Supabase configuration:
-
-```bash
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-The service-role key must remain server-side and must never be committed.
+`SUPABASE_SERVICE_ROLE_KEY` is only needed for administrative reset tooling. It must never be exposed to the browser or committed to Git.
 
-Open:
+---
+
+## Automated Verification
+
+Normal pushes run the functional smoke workflow:
 
 ```text
-http://localhost:3000
+install dependencies
+      ↓
+TypeScript typecheck
+      ↓
+production Next.js build
+      ↓
+production server boot
+      ↓
+homepage HTTP smoke
+      ↓
+protected API authentication-boundary checks
 ```
 
----
-
-## CLI Memory Proof
-
-The standalone Hindsight proof can still be run with:
+You can run the core checks locally with:
 
 ```bash
-HINDSIGHT_API_KEY=hsk_... npm run memory:demo
+npm run typecheck
+npm run build
 ```
-
-It demonstrates the retain → recall → reflect → Decision Drift loop independently from the main UI.
 
 ---
 
-## Current Status
+## Authenticated Product Smoke
 
-Implemented:
+DecisionDNA also includes a real authenticated smoke script:
 
-- Hindsight memory bank integration
-- organizational event retention
-- evidence recall
-- cross-memory reflection
-- Decision Drift detection
-- DecisionDNA dashboard
-- evidence drawer
-- organizational-memory queries
-- decision timeline
-- Supabase product schema
+```bash
+npm run smoke:authenticated
+```
 
-Next product step:
+Required variables:
 
-- persist NovaPay events, decisions, constraints, and reviews fully in Supabase
-- replace remaining static dashboard metadata with server-backed records
-- keep Hindsight as the intelligence and memory layer
+```bash
+SMOKE_BASE_URL=https://your-deployment.example
+SMOKE_EMAIL=...
+SMOKE_PASSWORD=...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+The read-only smoke verifies:
+
+- Supabase authentication,
+- Hindsight status,
+- Recall of the Redis / `INC-142` / `DEC-021` story,
+- Reflect,
+- Decision Contract,
+- Memory Time Travel,
+- Proposal Guard.
+
+To additionally test a real retain, deduplication, and Decision Shockwave:
+
+```bash
+SMOKE_MUTATE=1 npm run smoke:authenticated
+```
+
+A manual GitHub Actions workflow is also available at:
+
+```text
+.github/workflows/authenticated-smoke.yml
+```
+
+This allows the deployed application to keep the Hindsight API key private while the smoke test authenticates through Supabase and exercises the real product routes.
+
+---
+
+## Deterministic Demo Reset
+
+A guarded reset command can rebuild the NovaPay demo across both Hindsight and Supabase:
+
+```bash
+CONFIRM_DEMO_RESET=RESET_NOVAPAY npm run demo:reset
+```
+
+It:
+
+1. deletes and recreates the DecisionDNA Hindsight bank,
+2. reapplies the bank missions/configuration,
+3. retains the canonical NovaPay history,
+4. rebuilds NovaPay's Supabase events and decisions,
+5. recreates `DEC-021` constraints, review state, and seven Decision Contract terms.
+
+The command refuses to run unless the explicit confirmation variable is present.
+
+---
+
+## Security / Human Control
+
+- Hindsight routes require a valid Supabase bearer session.
+- Organization data is protected with Supabase Row Level Security.
+- The Hindsight API key remains server-side.
+- The Supabase service-role key remains administrative/server-only.
+- DecisionDNA recommends review; humans retain authority over the final decision.
 
 ---
 
