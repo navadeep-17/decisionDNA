@@ -11,6 +11,7 @@ import DecisionContract from "@/components/decision-contract";
 import KnowledgeGapRadar from "@/components/knowledge-gap-radar";
 import IntelligenceCenter from "@/components/intelligence-center";
 import "./globals.css";
+import "./readability.css";
 import "./intelligence-center.global.css";
 
 export const metadata: Metadata = {
