@@ -139,14 +139,27 @@ export default function Home() {
   }, []);
 
   async function post<T>(path: string, body?: object): Promise<T> {
+    const supabase = getSupabaseBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    const accessToken = data.session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("Your Supabase session is missing. Sign in again and retry.");
+    }
+
+    const headers: Record<string, string> = {
+      authorization: `Bearer ${accessToken}`,
+    };
+    if (body) headers["content-type"] = "application/json";
+
     const response = await fetch(path, {
       method: "POST",
-      headers: body ? { "content-type": "application/json" } : undefined,
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data?.error || `Request failed with ${response.status}`);
-    return data as T;
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload?.error || `Request failed with ${response.status}`);
+    return payload as T;
   }
 
   async function loadWorkspaceData() {
@@ -290,7 +303,7 @@ export default function Home() {
             <h1>Decision intelligence</h1>
           </div>
           <div className="topActions">
-            <div className="memoryLive"><span className="liveDot" />Live product data</div>
+            <div className="memoryLive"><span className="liveDot" />Authenticated live data</div>
             <button className="primaryBtn compact" onClick={() => document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" })}>Ask memory</button>
           </div>
         </header>
@@ -301,7 +314,7 @@ export default function Home() {
               <p className="sectionKicker">ORGANIZATIONAL MEMORY</p>
               <h2>Your team remembers what happened.<br /><span>DecisionDNA remembers why.</span></h2>
               <p>
-                Supabase stores the product state and decision workflow. Hindsight stores the organization&apos;s semantic and temporal memory and reasons across it.
+                Supabase stores authenticated product state and decision workflow. Hindsight stores semantic and temporal organizational memory and reasons across it.
               </p>
             </div>
             <div className="memoryPulse">
