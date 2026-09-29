@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AuthShell from "@/components/auth-shell";
+import DriftScanner from "@/components/drift-scanner";
 import "./globals.css";
-import "./ingest.css";
 
 export const metadata: Metadata = {
   title: "DecisionDNA",
@@ -12,7 +12,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <AuthShell>{children}</AuthShell>
+        <AuthShell>
+          <>
+            {children}
+            <DriftScanner />
+          </>
+        </AuthShell>
       </body>
     </html>
   );
