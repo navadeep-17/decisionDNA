@@ -51,9 +51,9 @@ async function main() {
   const recalled = await client.recall(
     bankId,
     "Why did NovaPay stop using Redis for checkout sessions?",
-    { limit: 8, budget: "mid" },
+    { maxTokens: 4096, budget: "mid" },
   );
-  for (const item of recalled.results) console.log(`- ${item.text}`);
+  for (const item of recalled.results.slice(0, 8)) console.log(`- ${item.text}`);
 
   console.log("\nREFLECT — Does DEC-021 deserve review now?\n");
   const reflected = await client.reflect(
