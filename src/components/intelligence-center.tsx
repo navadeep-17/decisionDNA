@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import styles from "./intelligence-center.module.css";
+import styles from "./intelligence-center-v2.module.css";
 
 type Tool = {
   id: string;
@@ -214,18 +214,10 @@ export default function IntelligenceCenter() {
                 <span>One place for every memory-native capability.</span>
               </div>
               <div className={styles.headerActions}>
-                <button
-                  className={mode === "judge" ? styles.modeActive : ""}
-                  type="button"
-                  onClick={() => setMode("judge")}
-                >
+                <button className={mode === "judge" ? styles.modeActive : ""} type="button" onClick={() => setMode("judge")}>
                   ▶ Judge mode
                 </button>
-                <button
-                  className={mode === "center" ? styles.modeActive : ""}
-                  type="button"
-                  onClick={() => setMode("center")}
-                >
+                <button className={mode === "center" ? styles.modeActive : ""} type="button" onClick={() => setMode("center")}>
                   Intelligence tools
                 </button>
                 <button className={styles.closeButton} type="button" onClick={() => setOpen(false)} aria-label="Close">×</button>
@@ -269,23 +261,14 @@ export default function IntelligenceCenter() {
                   </article>
 
                   <div className={styles.judgeControls}>
-                    <button
-                      type="button"
-                      className={styles.secondaryButton}
-                      disabled={judgeStep === 0}
-                      onClick={() => setJudgeStep((step) => Math.max(0, step - 1))}
-                    >
+                    <button type="button" className={styles.secondaryButton} disabled={judgeStep === 0} onClick={() => setJudgeStep((step) => Math.max(0, step - 1))}>
                       ← Previous
                     </button>
                     <button type="button" className={styles.primaryButton} onClick={runJudgeAction}>
                       {activeStep.action} →
                     </button>
                     {judgeStep < judgeSteps.length - 1 ? (
-                      <button
-                        type="button"
-                        className={styles.textButton}
-                        onClick={() => setJudgeStep((step) => Math.min(judgeSteps.length - 1, step + 1))}
-                      >
+                      <button type="button" className={styles.textButton} onClick={() => setJudgeStep((step) => Math.min(judgeSteps.length - 1, step + 1))}>
                         Skip step
                       </button>
                     ) : null}
@@ -303,9 +286,7 @@ export default function IntelligenceCenter() {
                   <div>
                     <p className={styles.eyebrow}>MEMORY-NATIVE INTELLIGENCE</p>
                     <h3>From “what happened?” to “what changed our decision?”</h3>
-                    <p>
-                      DecisionDNA organizes its capabilities around the decision lifecycle instead of exposing a collection of unrelated AI widgets.
-                    </p>
+                    <p>DecisionDNA organizes its capabilities around the decision lifecycle instead of exposing a collection of unrelated AI widgets.</p>
                   </div>
                   <button type="button" className={styles.primaryButton} onClick={() => setMode("judge")}>
                     Start judge mode →
