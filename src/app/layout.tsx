@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AuthShell from "@/components/auth-shell";
 import "./globals.css";
+import "./ingest.css";
 
 export const metadata: Metadata = {
   title: "DecisionDNA",
