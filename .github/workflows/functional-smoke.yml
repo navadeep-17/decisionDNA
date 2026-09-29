@@ -1,0 +1,95 @@
+name: DecisionDNA Functional Smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      HINDSIGHT_BASE_URL: https://api.hindsight.vectorize.io
+      HINDSIGHT_API_KEY: ci-placeholder-hindsight-key
+      HINDSIGHT_BANK_ID: decisiondna-novapay
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build
+
+      - name: Start production server
+        run: |
+          npm start > /tmp/decisiondna-next.log 2>&1 &
+          echo $! > /tmp/decisiondna-next.pid
+
+      - name: Wait for server and smoke homepage
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 30); do
+            code=$(curl -sS -o /tmp/home.html -w "%{http_code}" http://127.0.0.1:3000/ || true)
+            if [ "$code" = "200" ]; then
+              break
+            fi
+            sleep 1
+          done
+          test "${code:-}" = "200" || { cat /tmp/decisiondna-next.log; exit 1; }
+          grep -qi "DecisionDNA" /tmp/home.html || { echo "DecisionDNA marker missing from homepage"; cat /tmp/home.html; exit 1; }
+
+      - name: Protected API routes reject unauthenticated requests
+        run: |
+          set -euo pipefail
+          routes=(
+            "/api/hindsight/status"
+            "/api/hindsight/recall"
+            "/api/hindsight/reflect"
+            "/api/hindsight/drift"
+            "/api/hindsight/scan"
+            "/api/hindsight/proposal-check"
+            "/api/hindsight/patterns"
+            "/api/hindsight/replay"
+            "/api/hindsight/contradictions"
+            "/api/hindsight/trust-score"
+            "/api/hindsight/shockwave"
+            "/api/hindsight/contract-check"
+            "/api/hindsight/gaps"
+            "/api/memory/ingest"
+          )
+          for route in "${routes[@]}"; do
+            code=$(curl -sS -o /tmp/api-response.txt -w "%{http_code}" -X POST \
+              -H "Content-Type: application/json" \
+              -d '{}' \
+              "http://127.0.0.1:3000$route")
+            if [ "$code" != "401" ]; then
+              echo "$route expected 401, got $code"
+              cat /tmp/api-response.txt
+              cat /tmp/decisiondna-next.log
+              exit 1
+            fi
+            echo "PASS $route -> 401"
+          done
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f /tmp/decisiondna-next.pid ]; then
+            kill "$(cat /tmp/decisiondna-next.pid)" || true
+          fi
+          tail -n 80 /tmp/decisiondna-next.log || true
