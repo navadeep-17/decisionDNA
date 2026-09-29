@@ -1,0 +1,48 @@
+name: DecisionDNA Authenticated Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      mutate:
+        description: "Also test live memory retain, deduplication, and Shockwave"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  authenticated-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SMOKE_BASE_URL: ${{ secrets.SMOKE_BASE_URL }}
+      SMOKE_EMAIL: ${{ secrets.SMOKE_EMAIL }}
+      SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SMOKE_MUTATE: ${{ inputs.mutate && '1' || '0' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify smoke configuration exists
+        run: |
+          set -euo pipefail
+          required=(SMOKE_BASE_URL SMOKE_EMAIL SMOKE_PASSWORD NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY)
+          for key in "${required[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              echo "Missing required repository secret: $key"
+              exit 1
+            fi
+          done
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run authenticated product smoke
+        run: npm run smoke:authenticated
