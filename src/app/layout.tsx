@@ -9,7 +9,9 @@ import DecisionTrustScore from "@/components/decision-trust-score";
 import DecisionShockwave from "@/components/decision-shockwave";
 import DecisionContract from "@/components/decision-contract";
 import KnowledgeGapRadar from "@/components/knowledge-gap-radar";
+import IntelligenceCenter from "@/components/intelligence-center";
 import "./globals.css";
+import "./intelligence-center.global.css";
 
 export const metadata: Metadata = {
   title: "DecisionDNA",
@@ -23,17 +25,36 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AuthShell>
           <>
             {children}
-            <ProposalGuard />
-            <DecisionShockwave />
-            <KnowledgeGapRadar />
-            <PatternIntelligence />
-            <DecisionContract decisionKey="DEC-021" />
-            <DecisionTrustScore decisionKey="DEC-021" />
-            <ContradictionRadar />
-            <div style={{ position: "fixed", right: 22, bottom: 96, zIndex: 65, width: 238 }}>
+
+            <div id="tool-proposal-guard" className="intelligenceToolMount">
+              <ProposalGuard />
+            </div>
+            <div id="tool-shockwave" className="intelligenceToolMount">
+              <DecisionShockwave />
+            </div>
+            <div id="tool-knowledge-gaps" className="intelligenceToolMount">
+              <KnowledgeGapRadar />
+            </div>
+            <div id="tool-patterns" className="intelligenceToolMount">
+              <PatternIntelligence />
+            </div>
+            <div id="tool-decision-contract" className="intelligenceToolMount">
+              <DecisionContract decisionKey="DEC-021" />
+            </div>
+            <div id="tool-trust-score" className="intelligenceToolMount">
+              <DecisionTrustScore decisionKey="DEC-021" />
+            </div>
+            <div id="tool-contradictions" className="intelligenceToolMount">
+              <ContradictionRadar />
+            </div>
+            <div id="tool-decision-replay" className="intelligenceToolMount">
               <DecisionReplay decisionKey="DEC-021" />
             </div>
-            <DriftScanner />
+            <div id="tool-drift-scanner" className="intelligenceToolMount">
+              <DriftScanner />
+            </div>
+
+            <IntelligenceCenter />
           </>
         </AuthShell>
       </body>
